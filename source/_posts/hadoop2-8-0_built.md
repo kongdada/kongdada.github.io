@@ -2,7 +2,7 @@
 title: 伪分布式hadoop2.8.0安装与环境搭建
 date: 2017-11-30 15:25:37
 tags: "hadoop"
-categories: Hadoops
+categories: Hadoop
 ---
 #### 详细教程
 这儿有篇宝典，简单有效，相见恨晚：[点击打开宝典](https://www.jianyujianyu.com/ubuntu16.04-hadoop2.8.0/)
