@@ -30,5 +30,5 @@ categories: Blog相关
 - 清除生成内容： hexo clean             清除本地生成的文件 
 - 部署Hexo：hexo deploy                 将本地文件部署到 GitHub
 - 最后说一句，了解一下超简单的几个MarkDown语法就可以轻松编辑 .md 文件。就是在写文章啦。
-- [超简单的MarkDown写法](https://kongdada.github.io/2017/11/20/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/)
+- [超简单的MarkDown写法](https://kongdada.github.io/2017/11/20/MarkDown/#more)
 
