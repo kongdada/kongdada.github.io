@@ -82,8 +82,8 @@ StringBuilder类提供与StringBuffer 相同的方法。
 
 #### 地图的导航功能背后是怎么存储数据的额，他又是怎么做到精确导航的；
 没答上来,人家就没扩展直接跳过了；
-#### 笔试的一个题；
-- 寻找最长的重叠字符串abcabc这种定义位重叠字符串``` 
+#### 笔试的一个题
+- 寻找最长的重叠字符串，abcabc这种定义位重叠字符串``` 
 	package vivo;
 	import java.util.Arrays;
 	public class FindRepeat {
