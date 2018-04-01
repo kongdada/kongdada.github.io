@@ -1,5 +1,5 @@
 ---
-title: VIVO技术面试总结-大数据开发岗
+title: vivo技术面试总结-大数据开发岗
 date: 2018-03-20 09:59:04
 tags: Interview
 categories: Interview
