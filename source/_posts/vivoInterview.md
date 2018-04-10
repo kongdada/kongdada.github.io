@@ -4,7 +4,7 @@ date: 2018-03-20 09:59:04
 tags: Interview
 categories: Interview
 ---
-稀里糊涂过了笔试，很幸运的得到了面试机会，背着我的小书包，挤着地铁就去了西土城面试；
+过了笔试，很幸运的得到了面试机会，背着我的小书包，挤着地铁就去了西土城面试；
 <!--more-->
 #### 自我介绍
 这部分就不多说了，我说的也不好，大致介绍了一下个人的基本情况；
@@ -15,7 +15,7 @@ categories: Interview
 - 给数组排序;
 - 二分查找，找到最后一个区间，返回右边界。这就是所在区间的右边界;
 要求写出大概的代码：
-现场我没写出来，时间有点紧，我有点菜；```
+现场我没写出来，时间有点紧；```
 	package vivo;
 	import java.util.Arrays;
 	public class search100w {
@@ -83,7 +83,7 @@ StringBuilder类提供与StringBuffer 相同的方法。
 #### 地图的导航功能背后是怎么存储数据的额，他又是怎么做到精确导航的；
 没答上来,人家就没扩展直接跳过了；
 #### 笔试的一个题
-- 寻找最长的重叠字符串，abcabc这种定义位重叠字符串``` 
+- 寻找最长的重叠字符串，abcabc这种定义位重叠字符串```
 	package vivo;
 	import java.util.Arrays;
 	public class FindRepeat {

@@ -5,8 +5,7 @@ tags: Interview
 categories: Interview
 ---
 感谢日志易给的面试机会，感谢技术面大佬；
-最后厚着脸皮要了个评语：基础知识还行，但是不够熟练，不能用起来，代码量太少，一看就没写过多少代码；
-被看穿，情理之中，我没想过要隐藏什么；
+最后厚着脸皮要了个评语：基础知识还行，但是不够熟练;
 <!--more-->
 #### 笔试
 这一部分的话，回忆几个比较重要的（我回答错）点。
@@ -150,35 +149,34 @@ public class Synonym {
 - 这个问题我还没有思路解决在数学上证明方法是最简单的；
 但是在书上找到了一种相对简单的方法；
 - 先将200转为二进制表示法，11001000；
-- 2^200 = 2^128 * 2^64 * 2^8;   
+- > 2^200 = 2^128 * 2^64 * 2^8;   
 在这个过程中我们只需要计算2^1 2^2 2^4 2^8 2^16 2^32 2^64 2^128,也就是二进制有多少位，我们就需要计算多少次；
 - 在计算最后结果时，只需要二进制对应是1的地方累乘，计算对应0的地方不需要累乘；
 - 没有考虑大数
 - 代码：
 ```
 package rizhiyi;
-
+// 求2^50最快捷的方式
 public class bigPower {
 
 	public static void main(String[] args) {
-		int n = 4;
+		int n = 50;
 		String str = Integer.toBinaryString(n);
-		// System.out.println(str);
+		System.out.println("二进制表示： " + str);
 		char[] ch = str.toCharArray();
-		long[] res = new long[str.length()];
+		long[] res = new long[str.length() + 1];
 		res[0] = 1;
 		res[1] = 2;
 		long ans = 1;
-		for (int i = 2; i < str.length(); i++) {
+		for (int i = 2; i <= str.length(); i++) {
 			res[i] = res[i - 1] * res[i - 1];
 		}
 		for (int j = ch.length - 1; j >= 0; j--) {
 			if (ch[j] == '1') {
-				ans *= res[res.length-1-j];
+				ans *= res[res.length - 1 - j];
 			}
 		}
 		System.out.println(ans);
 	}
-
 }
 ```
