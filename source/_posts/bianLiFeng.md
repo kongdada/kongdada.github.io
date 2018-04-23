@@ -15,7 +15,40 @@ categories: Interview
 将其他的元素用他本身的最后一个字符补充至长度3，得到 "912", "999", "199";
 现在将元素排序得到 "999","912","199";
 最后将补充的字符都删除，即可得到：9 912 199；
-代码较为杂乱，先不献丑了；
+代码很杂乱，不献丑了；
+方法二：
+用到了贪心策略，局部最优，推广到整体。引进一个比较器，自定义比较方式；
+例如，在自定义之前是按字典序排序，该字符串数组排序结果为："19" "9" "912"，举例子，显然我们需要的不是"19" < "9"，我们需要的是链接后“199”<"919"的顺序,需要的是"9129" < "9912",类似于这种，就是说我们需要的是链接后的顺序，不要链接前的顺序。贪心策略的证明很难，暂时不会，代码暂时没有问题；
+代码：
+```
+package bianlifeng;
+
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class improveSolution1 {
+	public static class MyComparator implements Comparator<String>{
+		@Override
+		public int compare(String str1, String str2) {
+			return (str1+str2).compareTo(str2+str1);
+		}
+	}
+	public static void main(String[] args) {
+		int[] arr = {18,89,12,56,4,3,7};
+		String[] strArr = new String[arr.length];
+		for(int i=0; i < arr.length;i++) {
+			strArr[i] = arr[i] + "";
+		}
+		Arrays.sort(strArr);
+		System.out.println("不用比较器：" + Arrays.toString(strArr));
+		Arrays.sort(strArr, new MyComparator());
+		System.out.println("用比较器： " + Arrays.toString(strArr));
+		for(int i = strArr.length-1 ; i >= 0; i--) {
+			System.out.print(strArr[i]);
+		}
+	}
+}
+```
 ##### 第二道：给出一个数组arr，长度为n;每一个元素代表存在的货币值，现在给出一个aim，求最少用几张货币能够组成这个整数aim，每张货币不限使用次数。
 - 经典的动态规划问题，构建dp矩阵，n行aim+1列；
 - 第一列：aim = 0,自然第一列都是0；
