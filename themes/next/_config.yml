@@ -151,11 +151,13 @@ social_icons:
 
 # Blog rolls
 links_icon: link
-links_title: Links
-links:
+links_title: 友情链接
 links_layout: block
 # links_layout: inline
-
+links:
+  TensoryCSDN: https://blog.csdn.net/ten_sory
+  Tensory: http://tensory.online/
+  
 
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
