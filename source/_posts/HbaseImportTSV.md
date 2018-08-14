@@ -13,14 +13,17 @@ stepA: 生成HFile格式的文件
 stepB: 执行一个叫做CompleteBulkLoad的命令，将文件move到HBase表空间目录
 ##### 一个例子：
 - 第一步，生成Hfile
+```
 $ bin/hbase org.apache.hadoop.hbase.mapreduce.ImportTsv 
 -Dimporttsv.columns=HBASE_ROW_KEY,f:accountID,f:time,f:crownCommonKeyID	//格式
 -Dimporttsv.bulk.output=hdfs://storefile-outputdir 	//输出目录
 <tablename> 	//输出后保存文件名
 <hdfs-data-inputdir>	//输入目录
+```
 - 第二步，完成导入
+```
 $ bin/hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles 
 <hdfs://storefileoutput> 	//这是上文的输出目录，也是这一步的输入目录
 <tablename>	//导入hbase的表名
-
+```
 基本使用便是以上这样子。
