@@ -391,7 +391,7 @@ valine:
   appkey: Bg1GPag7MFxV88X2phtwhoOR # your leancloud application appkey
   notify: false # mail notifier , https://github.com/xCss/Valine/wiki
   verify: false # Verification code
-  placeholder: 随意吐槽吧 # comment box placeholder
+  placeholder: 欢迎留言交流 # comment box placeholder
   avatar: mm # gravatar style
   guest_info: nick,mail,link # custom comment header
   pageSize: 10 # pagination size
@@ -567,7 +567,7 @@ busuanzi_count:
   site_pv_header: <i class="fa fa-eye"></i> 本站总访问量
   site_pv_footer: 次
   # custom pv span for one page only
-  page_pv: true
+  page_pv: false
   page_pv_header: <i class="fa fa-file-o"></i> 本文总阅读量
   page_pv_footer: 次
 
