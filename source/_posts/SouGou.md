@@ -1,7 +1,7 @@
 ---
 title: 搜狗技术面总结
 date: 2018-04-18 16:08:01
-tags: Interview hadoop HashMap
+tags: [hadoop, HashMap]
 categories: Interview
 ---
 感谢搜狗给的面试机会，感谢技术面大佬；

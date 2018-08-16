@@ -2,7 +2,7 @@
 title: 博客搭建过程
 date: 2017-11-22 14:11:24
 update: 2017-11-23 20:25:00
-tags: Hexo next github
+tags: [Hexo, next, github]
 categories: Blog相关
 ---
 #### 个人理解：

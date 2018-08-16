@@ -1,7 +1,7 @@
 ---
 title: 伪分布式hadoop2.8.0安装与环境搭建
 date: 2017-11-30 15:25:37
-tags: "hadoop"
+tags: hadoop
 categories: Hadoop
 ---
 #### 详细教程

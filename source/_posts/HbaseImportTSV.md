@@ -1,7 +1,7 @@
 ---
-title: HbaseImportTSV
+title: Hbase ImportTSV
 date: 2018-08-14 15:16:46
-tags: Hbase import
+tags: [Hbase, import]
 categories: Hbase
 ---
 这个也是最近经手的一个项目中涉及到的一个可以将HDFS上的数据直接导入HBASE表中的命令行工具。这个属于HBASE所以与上一篇Hadoop中的工具分开来写。

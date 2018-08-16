@@ -1,7 +1,7 @@
 ---
 title: 一点资讯技术面总结
 date: 2018-04-19 20:26:07
-tags: 算法 Linux
+tags: [算法, Linux]
 categories: Interview
 ---
 感谢一点资讯给的面试机会；

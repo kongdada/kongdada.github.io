@@ -1,7 +1,7 @@
 ---
 title: 从Hive导出数据到Oracle数据库--Sqoop
 date: 2017-12-01 09:48:59
-tags: "Hive"
+tags: Hive
 categories: Hive
 ---
 实习老大让我把Hive中的数据导入Oracle数据库。摸索成功后记录如下：

@@ -1,7 +1,7 @@
 ---
 title: Hadoop Streamig 和 Hadoop Distcp的简单介绍
 date: 2018-08-14 10:38:12
-tags: hadoop Streaming Distcp
+tags: [hadoop, Streaming, Distcp]
 categories: Hadoop
 ---
 今天总结一下经手的一个项目中用到的Hadoop工具；

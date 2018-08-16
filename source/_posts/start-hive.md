@@ -1,7 +1,7 @@
 ---
 title: Hive常用命令
 date: 2017-12-01 16:03:21
-tags: "Hive"
+tags: Hive
 categories: Hive
 ---
 Hive 常见命令，老大说学完就给我点权限。
