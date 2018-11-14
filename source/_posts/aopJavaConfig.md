@@ -227,7 +227,7 @@ public class PerformanceTest {
     }
 }
 ```
-测试结果如下：
+测试结果如下:
 ```
 手机静音！
 请坐！
