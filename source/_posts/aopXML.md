@@ -28,7 +28,7 @@ public class PerformanceImpl implements Performance {
     }
 }
 ```
-##### 定义一个切面，同时定义了切点和通知
+##### 定义一个切面
 ```
 package aopXML;
 
@@ -52,6 +52,8 @@ public class Audience {
 ```
 ##### 将切面跟特定方法联系起来
 这一次采用配置XML的方式来开发；这个文件叫SpringAOP.xml
+定义切点，其实就是指定那个特定方法
+定义通知，其实就是通知对应的方法在特定方法前还是后调用，或者是特定方法调用成功或者出现异常
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
