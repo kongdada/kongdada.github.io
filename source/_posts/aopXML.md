@@ -1,5 +1,5 @@
 ---
-title: 在Spring中通过配置XML创建切面，同时通过切面引入新功能
+title: 在Spring中创建切面，通过切面引入新功能-使用配置XML
 date: 2018-11-14 10:58:37
 tags: [Java, Spring, XML]
 categories: Spring
