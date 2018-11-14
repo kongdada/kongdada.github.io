@@ -7,7 +7,22 @@ categories: Spring
 最近在看《Spring实战》，在这儿使用注解完整的实现一个切面的例子，也实现通过注解引入新功能；
 <!-- more -->
 #### 实现切面
+
 关于切面相关概念这篇不提，可以大致理解成，只要调用某个特定的方法，这个调用信息会被切面拦截，然后执行切面定义的逻辑，之后才能顺利的调用该方法。
+我这个是一个maven项目所有代码写在同一个包下面，测试类除外。关于切面这个部分可能需要导入一些包。
+pom.xml
+```
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.2.4</version>
+        </dependency>
+```
 
 ##### 定义特定的方法
 - 首先定一个接口
@@ -211,6 +226,15 @@ public class PerformanceTest {
         encoreable.performEncore();
     }
 }
+```
+测试结果如下：
+```
+手机静音！
+请坐！
+演出～～～
+表演结束，鼓掌！！！
++++++++++++++++++++++++++++++++++++
+返场表演～～～
 ```
 至此使用注解方式开发切面，切点，通知，新加方法都已经完成。代码经过了验证；
 如有错误，还请指正。欢迎交流。
