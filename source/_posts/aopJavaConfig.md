@@ -159,7 +159,7 @@ public class EncoreableImpl implements Encoreable{
 }
 ```
 ##### 将新功能引入原来特定方法形成的bean中
-可以将bean看作一个对象，就是将这个新的方法加到特定的这个对象中，也就是让这个对象可以直接调用新加的方法；
+可以将bean看作一个对象，这个特定的这个对象中添加一个新的方法，也就是让这个对象可以直接调用新加的方法；
 ```
 package aopJavaConfig;
 import org.aspectj.lang.annotation.Aspect;
@@ -174,6 +174,8 @@ public class EncoreableIntroducer {
     public static Encoreable encoreable;
 }
 ```
+- @DeclareParents 这个注解的value制定了这个新方法加给谁，defaultImpl这个参数指定了新加方法的具体实现。
+实际上新加方法是加给了value制定方法的父类。
 ##### 新加方法要告知Spring容器
 修改配置类如下：
 ```
