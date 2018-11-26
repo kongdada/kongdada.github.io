@@ -28,6 +28,7 @@ public class PerformanceImpl implements Performance {
     }
 }
 ```
+
 ##### 定义一个切面
 ```
 package aopXML;
@@ -131,6 +132,7 @@ public class EncoreableImpl implements Encoreable {
     }
 }
 ```
+
 ##### 将新加的功能与特定方法联系起来
 修改SpringAOP.xml
 ```

@@ -32,6 +32,7 @@ public class PerformanceImpl implements Performance {
     }
 }
 ```
+
 #### 定义一个切面，实现各种通知
 ```
 package aopAspectJ;
@@ -102,6 +103,7 @@ public aspect Audience {
 - 将编译方式修改为Ajc
 - 在你的本地仓库中找到aspectjtools-1.8.6.jar这个包，路径配置：Path to Ajc compiler
 ![](/images/aopAspectJ.png)
+
 #### 单元测试
 - 代码：
 ```
@@ -133,12 +135,14 @@ public class PerformanceImplTest {
 表演后：鼓掌！！！
 调用成功，表演很精彩，鼓掌！！！
 ```
+
 #### 后记
 ##### 我的理解
 关于AOP的小例子写了三个，关于切面，切点，通知的定义，这个网上已经很多了不赘述。希望通过三个小例子，可以为你理清一点头绪，确定一下几点：
 - AOP的实现分两大类SpringAOP和AspectJ;
 - SpringAOP的代码实现可以使用注解方式，也可以使用配置XML的方式；
 - 注解与XML方式，其实可以理解成利用不同的写法把这个特定的方法和这些通知组织起来，联系起来。
+
 ##### 看过的好文章
 最后一部分提供两篇我看过的，很好的文章，希望对你也有所启迪。
 - AOP1
