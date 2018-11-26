@@ -240,3 +240,6 @@ public class PerformanceTest {
 ```
 至此使用注解方式开发切面，切点，通知，新加方法都已经完成。代码经过了验证；
 如有错误，还请指正。欢迎交流。
+#### 后记
+- 整个工程代码在下面的链接中，如果需要可以下载看一看。
+- [点击跳转到我的GitHub](https://github.com/kongdada/learnSpring)

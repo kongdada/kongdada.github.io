@@ -134,13 +134,18 @@ public class PerformanceImplTest {
 调用成功，表演很精彩，鼓掌！！！
 ```
 #### 后记
+##### 我的理解
 关于AOP的小例子写了三个，关于切面，切点，通知的定义，这个网上已经很多了不赘述。希望通过三个小例子，可以为你理清一点头绪，确定一下几点：
 - AOP的实现分两大类SpringAOP和AspectJ;
 - SpringAOP的代码实现可以使用注解方式，也可以使用配置XML的方式；
 - 注解与XML方式，其实可以理解成利用不同的写法把这个特定的方法和这些通知组织起来，联系起来。
-#### 很好的文章
+##### 看过的好文章
 最后一部分提供两篇我看过的，很好的文章，希望对你也有所启迪。
 - AOP1
 [这篇很简明的说明了SpringAOP与AspectJ的区别](https://www.jianshu.com/p/fe8d1e8bd63e)
 - AOP2
 [这是一篇从AOP起源讲到不同实现的文章，几乎覆盖了我这篇，但我这是个完整例子。](https://blog.csdn.net/javazejian/article/details/56267036)
+
+##### 我的代码
+- 整个工程代码在下面的链接中，如果需要可以下载看一看。
+- [点击跳转到我的GitHub](https://github.com/kongdada/learnSpring)
