@@ -102,7 +102,7 @@ public aspect Audience {
 ##### 设置IDEA的编译方式
 - 将编译方式修改为Ajc
 - 在你的本地仓库中找到aspectjtools-1.8.6.jar这个包，路径配置：Path to Ajc compiler
-![](/images/aopAspectJ.png)
+![](https://ws1.sinaimg.cn/large/005Owz0qly1fxqbhirzalj30yj0my0w2.jpg)
 
 #### 单元测试
 - 代码：

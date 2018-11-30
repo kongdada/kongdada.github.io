@@ -22,7 +22,7 @@ $HADOOP_HOME/bin/hadoop  jar $HADOOP_HOME/hadoop-streaming.jar \
 - -mapper与-reducer都可以指定一个可执行文件（可以是脚本，也可以是class文件），如果不需要map/reduce任务则可以省略对应的这个选项。
 - -file 任何可执行文件都可以被指定为mapper/reducer。这些可执行文件不需要事先存放在集群上； 如果在集群上还没有，则需要用-file选项让framework把可执行文件作为作业的一部分，一起打包提交。
 - 一个说明图，说明这些作为Map或者Reduce的脚本与hadoop起的进程之间是怎么协作的。最重要的就是这些可执行文件是另起进程的。
-![](/images/hadoopStreaming.png)
+![](https://ws1.sinaimg.cn/large/005Owz0qly1fxqblwzuplj30qi0q0gn9.jpg)
 - 以上就是一个简单的介绍，Hadoop Streaming具体介绍可以点击下面的链接
 [点击查看Hadoop Streaming的详细介绍](https://hadoop.apache.org/docs/r1.0.4/cn/streaming.html#Hadoop+Streaming)
 
