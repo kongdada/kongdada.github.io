@@ -84,6 +84,6 @@ categories: Life
 你觉得面的非常好的公司不一定会要你，不是因为你不好，不要自我否定。这其中可能有很多的因素。坚定相信自己的价值；
 不卑不亢的去面试吧，你是被挑选的人，也是选择公司的人。
 **
-#### 我的面试记录
+#### 我的春招面试记录
 [https://kongdada.github.io/archives/page/2/](https://kongdada.github.io/archives/page/2/)
 还有任何疑问可以去留言板给我留言。
