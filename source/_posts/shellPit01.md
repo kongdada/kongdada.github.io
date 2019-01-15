@@ -37,4 +37,29 @@ echo "${sql}" | ${mysql}
 脑洞大开：`${sql}` 被替换成 `$select $* $from $test.klhinfo`, `$*`正好是获取所有传入的参数，估计是将当前目录下的文件名都当作参数传进来了。
 
 #### 在shell脚本中嵌入SQL的姿势
-
+我所了解的暂时有三种方式，在生产环境中第二种方式使用最多，第一种也常见，第三种比较少见。
+- shell中echo方式
+```
+ #!/bin/bash
+sql="select * from test.klhinfo;"
+mysql="mysql  -uroot -pmysql123"
+echo ${sql}
+echo "${sql}" | ${mysql}
+```
+- mysql命令行方式
+``` 
+#!/bin/bash
+sql="select * from test.klhinfo;"
+mysql="mysql  -uroot -pmysql123"
+echo ${sql}
+${mysql} -N -e "${sql}"
+```
+- 直接嵌入
+```
+#!/bin/bash
+passwd='mysql123'
+mysql -u root -p${passwd} <<EOF
+use kaka;
+select * from user;
+EOF
+```
