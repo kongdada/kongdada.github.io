@@ -43,7 +43,7 @@ echo "${sql}" | ${mysql}
  #!/bin/bash
 sql="select * from test.klhinfo;"
 mysql="mysql  -uroot -pmysql123"
-echo ${sql}
+echo "${sql}"
 echo "${sql}" | ${mysql}
 ```
 - mysql命令行方式
@@ -51,10 +51,10 @@ echo "${sql}" | ${mysql}
 #!/bin/bash
 sql="select * from test.klhinfo;"
 mysql="mysql  -uroot -pmysql123"
-echo ${sql}
+echo "${sql}"
 ${mysql} -N -e "${sql}"
 ```
-- 直接嵌入
+- 使用EOF直接嵌入
 ```
 #!/bin/bash
 passwd='mysql123'
