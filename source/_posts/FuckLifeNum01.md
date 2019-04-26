@@ -1,6 +1,6 @@
 ---
 title: 从求职到入职后一个月的生活
-date: 1996-08-16 16:00:56
+date: 1896-08-16 16:00:56
 tags: life
 categories: Life
 ---

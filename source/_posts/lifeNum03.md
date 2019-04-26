@@ -1,6 +1,6 @@
 ---
 title: 给未毕业的你们一些小小的建议
-date: 1996-12-23 16:18:50
+date: 1896-12-23 16:18:50
 tags: life
 categories: Life
 ---
