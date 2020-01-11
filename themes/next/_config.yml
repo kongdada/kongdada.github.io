@@ -162,7 +162,7 @@ links:
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
 # in site  directory(source/uploads): /uploads/avatar.gif
-avatar: \uploads\headpic.jpg
+avatar: /uploads/headpic.jpg
 
 # Table Of Contents in the Sidebar
 toc:
