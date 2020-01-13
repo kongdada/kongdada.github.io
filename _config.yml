@@ -7,7 +7,7 @@ title: Kong'Blog
 subtitle: 
 description: "充满激情，也保持克制"
 author: Waterkong
-language: zh-Hans
+language: zh-CN
 timezone:
 
 # URL
@@ -78,7 +78,7 @@ type: atom
 path: atom.xml
 limit: 20
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: hexo-theme-next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
