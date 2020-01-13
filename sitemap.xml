@@ -2,13 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://kongdada.github.io/categories/index.html</loc>
-    
-    <lastmod>2020-01-13T03:42:26.997Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://kongdada.github.io/tags/index.html</loc>
     
     <lastmod>2020-01-13T03:42:26.997Z</lastmod>
@@ -16,14 +9,21 @@
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/about/index.html</loc>
+    <loc>https://kongdada.github.io/categories/index.html</loc>
+    
+    <lastmod>2020-01-13T03:42:26.997Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://kongdada.github.io/2018/03/20/vivoInterview/</loc>
     
     <lastmod>2020-01-13T03:42:26.996Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2018/03/20/vivoInterview/</loc>
+    <loc>https://kongdada.github.io/about/index.html</loc>
     
     <lastmod>2020-01-13T03:42:26.996Z</lastmod>
     
@@ -142,14 +142,14 @@
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2018/03/29/RiZhiYi/</loc>
+    <loc>https://kongdada.github.io/2018/04/18/SouGou/</loc>
     
     <lastmod>2020-01-13T03:42:26.987Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2018/04/18/SouGou/</loc>
+    <loc>https://kongdada.github.io/2018/03/29/RiZhiYi/</loc>
     
     <lastmod>2020-01-13T03:42:26.987Z</lastmod>
     
@@ -184,14 +184,14 @@
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/1896/08/16/FuckLifeNum01/</loc>
+    <loc>https://kongdada.github.io/2018/08/14/HbaseImportTSV/</loc>
     
     <lastmod>2020-01-13T03:42:26.983Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2018/08/14/HbaseImportTSV/</loc>
+    <loc>https://kongdada.github.io/1896/08/16/FuckLifeNum01/</loc>
     
     <lastmod>2020-01-13T03:42:26.983Z</lastmod>
     
