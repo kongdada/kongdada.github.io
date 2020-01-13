@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://kongdada.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="感谢一点资讯给的面试机会；以前文章提到过的不在赘述，记录新的知识点。">
+<meta name="keywords" content="算法,Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一点资讯技术面总结">
+<meta property="og:url" content="https://kongdada.github.io/2018/04/19/YiDianZiXun/index.html">
+<meta property="og:site_name" content="Kong&#39;Blog">
+<meta property="og:description" content="感谢一点资讯给的面试机会；以前文章提到过的不在赘述，记录新的知识点。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-13T03:42:26.988Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一点资讯技术面总结">
+<meta name="twitter:description" content="感谢一点资讯给的面试机会；以前文章提到过的不在赘述，记录新的知识点。">
+
+<link rel="canonical" href="https://kongdada.github.io/2018/04/19/YiDianZiXun/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>一点资讯技术面总结 | Kong'Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?3f7522b0115bb0f5b5d19a5a19a888aa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kong'Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kongdada.github.io/2018/04/19/YiDianZiXun/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/headpic.jpg">
+      <meta itemprop="name" content="Waterkong">
+      <meta itemprop="description" content="充满激情，也保持克制">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kong'Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一点资讯技术面总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-19 20:26:07" itemprop="dateCreated datePublished" datetime="2018-04-19T20:26:07+08:00">2018-04-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-01-13 11:42:26" itemprop="dateModified" datetime="2020-01-13T11:42:26+08:00">2020-01-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Interview/" itemprop="url" rel="index">
+                    <span itemprop="name">Interview</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/04/19/YiDianZiXun/" class="post-meta-item leancloud_visitors" data-flag-title="一点资讯技术面总结" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/04/19/YiDianZiXun/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/04/19/YiDianZiXun/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>感谢一点资讯给的面试机会；<br>以前文章提到过的不在赘述，记录新的知识点。<br><a id="more"></a></p>
+<h4 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h4><p>Linux命令用法查询网站：<a href="http://man.linuxde.net/" target="_blank" rel="noopener">Click to jump</a></p>
+<h5 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h5><p>wc统计文件里面有多少单词，多少行，多少字符。<br>语法:<br>[root@www ~]# wc [-lwm]<br>选项与参数：<br>-l  ：仅列出行；<br>-w  ：仅列出多少字(英文单字)；<br>-m  ：多少字符；<br>eg:<br>默认使用wc统计/etc/passwd</p>
+<ul>
+<li>#wc /etc/passwd<br>40   45 1719 /etc/passwd<br>40是行数，45是单词数，1719是字节数</li>
+<li>#wc -l /etc/passwd   #统计行数，在对记录数时，很常用<br>40 /etc/passwd       #表示系统有40个账户</li>
+<li>#wc -w /etc/passwd  #统计单词出现次数<br>45 /etc/passwd</li>
+<li>#wc -m /etc/passwd  #统计文件的字符数<br>1719<h5 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h5>grep（global search regular expression(RE) and print out the line，全面搜索正则表达式并把行打印出来）是一种强大的文本搜索工具，它能使用正则表达式搜索文本，并把匹配的行打印出来。<br>常见用法：</li>
+<li>在文件中搜索一个单词，命令会返回一个包含“match_pattern”的文本行：<br>grep match_pattern file_name<br>grep “match_pattern” file_name<br>在多个文件中查找：<br>grep “match_pattern” file_1 file_2 file_3 …</li>
+<li>输出除了匹配到的之外的所有行 -v 选项：<br>grep -v “match_pattern” file_name</li>
+<li>使用正则表达式 -E 选项：<br>grep -E “[1-9]+”<br>或<br>egrep “[1-9]+”</li>
+<li>统计文件或者文本中包含匹配字符串的行数 -c 选项：<br>grep -c “text” file_name</li>
+<li>输出包含匹配字符串的行数 -n 选项：<br>grep “text” -n file_name<br>或<br>cat file_name | grep “text” -n<br>#多个文件<br>grep “text” -n file_1 file_2<h5 id="date"><a href="#date" class="headerlink" title="date"></a>date</h5></li>
+<li>格式化输出：<br>date + “%Y%m%d”</li>
+<li>前一天：<br>date -d “1 day ago” + date +”%Y-%m-%d”<ul>
+<li>加减操作：<br>date +%Y%m%d                   //显示前天年月日<br>date -d “+1 day” +%Y%m%d       //显示前一天的日期<br>date -d “-1 day” +%Y%m%d       //显示后一天的日期<br>date -d “-1 month” +%Y%m%d     //显示上一月的日期<br>date -d “+1 month” +%Y%m%d     //显示下一月的日期<br>date -d “-1 year” +%Y%m%d      //显示前一年的日期<br>date -d “+1 year” +%Y%m%d      //显示下一年的日期</li>
+</ul>
+</li>
+<li>设定时间：<br>date -s                //设置当前时间，只有root权限才能设置，其他只能查看<br>date -s 20120523       //设置成20120523，这样会把具体时间设置成空00:00:00<br>date -s 01:01:01       //设置具体时间，不会对日期做更改<br>date -s “01:01:01 2012-05-23”  //这样可以设置全部时间<br>date -s “01:01:01 20120523”    //这样可以设置全部时间<br>date -s “2012-05-23 01:01:01”  //这样可以设置全部时间<br>date -s “20120523 01:01:01”    //这样可以设置全部时间<h5 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h5>用户任务调度：用户定期要执行的工作，比如用户数据备份、定时邮件提醒等。用户可以使用 crontab 工具来定制自己的计划任务。所有用户定义的crontab文件都被保存在/var/spool/cron目录中。其文件名与用户名一致，使用者权限文件如下：<br>/etc/cron.deny     该文件中所列用户不允许使用crontab命令<br>/etc/cron.allow    该文件中所列用户允许使用crontab命令<br>/var/spool/cron/   所有用户crontab文件存放的目录,以用户名命名</li>
+</ul>
+<p>crontab文件的含义：用户所建立的crontab文件中，每一行都代表一项任务，每行的每个字段代表一项设置，它的格式共分为六个字段，前五段是时间设定段，第六段是要执行的命令段，格式如下：</p>
+<blockquote>
+<p>minute   hour   day   month   week   command     顺序：分 时 日 月 周</p>
+</blockquote>
+<p>其中：<br>minute： 表示分钟，可以是从0到59之间的任何整数。<br>hour：表示小时，可以是从0到23之间的任何整数。<br>day：表示日期，可以是从1到31之间的任何整数。<br>month：表示月份，可以是从1到12之间的任何整数。<br>week：表示星期几，可以是从0到7之间的任何整数，这里的0或7代表星期日。<br>command：要执行的命令，可以是系统命令，也可以是自己编写的脚本文件。<br>在以上各个字段中，还可以使用以下特殊字符：<br>星号（<em>）：代表所有可能的值，例如month字段如果是星号，则表示在满足其它字段的制约条件后每月都执行该命令操作。<br>逗号（,）：可以用逗号隔开的值指定一个列表范围，例如，“1,2,5,7,8,9”<br>中杠（-）：可以用整数之间的中杠表示一个整数范围，例如“2-6”表示“2,3,4,5,6”<br>正斜线（/）：可以用正斜线指定时间的间隔频率，例如“0-23/2”表示每两小时执行一次。同时正斜线可以和星号一起使用，例如</em>/10，如果用在minute字段，表示每十分钟执行一次。<br><a href="http://man.linuxde.net/crontab" target="_blank" rel="noopener">详细用法链接：</a></p>
+<h4 id="数据结构与算法"><a href="#数据结构与算法" class="headerlink" title="数据结构与算法"></a>数据结构与算法</h4><h5 id="给出一个数组-0，1，1，1，2，2，3，3，4，4，5，6，7，8，8-，求出现次数最多的那个数字出现次数，显然应该返回1，出现3次；"><a href="#给出一个数组-0，1，1，1，2，2，3，3，4，4，5，6，7，8，8-，求出现次数最多的那个数字出现次数，显然应该返回1，出现3次；" class="headerlink" title="给出一个数组{0，1，1，1，2，2，3，3，4，4，5，6，7，8，8}，求出现次数最多的那个数字出现次数，显然应该返回1，出现3次；"></a>给出一个数组{0，1，1，1，2，2，3，3，4，4，5，6，7，8，8}，求出现次数最多的那个数字出现次数，显然应该返回1，出现3次；</h5><p>当时的想法是采用桶，给出数组中的元素做下标，出现一次，对应桶的值+1；<br>但有问题，如果给出的数组特别大，那么空间复杂度就高，甚至内存溢出；<br>所以采取新的思路，用HashMap&lt;Integer, Integer&gt;,数组元素做key，出现次数做value;遍历数组，出现一次，value++；<br>代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">package YiDianZiXun;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">// 找到出现次数最多的那个数，和出现的次数；</span><br><span class="line">public class CountTimes &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		int[] arr = &#123; 0, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 8 &#125;;</span><br><span class="line">		int[] res = MaxTimes(arr);</span><br><span class="line">		System.out.println(&quot;数字：&quot; + res[0] + &quot; 出现次数： &quot; + res[1]);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private static int[] MaxTimes(int[] arr) &#123;</span><br><span class="line">		if(arr == null || arr.length &lt; 1)</span><br><span class="line">			return new int[] &#123;&#125;;</span><br><span class="line">		HashMap&lt;Integer, Integer&gt; map = new HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">		int times = 0;</span><br><span class="line">		int num = 0;</span><br><span class="line">		for (int i = 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">			if (map.get(arr[i]) == null) &#123;</span><br><span class="line">				map.put(arr[i], 1);</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				Integer value = map.get(arr[i]) + 1;</span><br><span class="line">				map.put(arr[i], value);</span><br><span class="line">				if (value &gt; times) &#123;</span><br><span class="line">					times = value;</span><br><span class="line">					num = arr[i];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return new int[] &#123; num, times &#125;;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="给出一个数组-1，0，1，2，3，0，1，4，-1，0-，求和为零的最长连续子序列；"><a href="#给出一个数组-1，0，1，2，3，0，1，4，-1，0-，求和为零的最长连续子序列；" class="headerlink" title="给出一个数组{-1，0，1，2，3，0，1，4，-1，0}，求和为零的最长连续子序列；"></a>给出一个数组{-1，0，1，2，3，0，1，4，-1，0}，求和为零的最长连续子序列；</h5><p>思路：定义sum(i)是数组的前i项和；<br>我们假设从i+1位置到j位置的和为零，那么我们可以得到sum(i) == sum(j)；<br>计算sum(i)，用一个map记录这个和，以及这个和第一次出现的位置；<br>如果一个和不是第一次出现，也就是存在sum(i) == sum(j)；j &gt; i；<br>那么从i+1 到 j位置的和就是零；长度为(j - i);<br>代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">package YiDianZiXun;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line"></span><br><span class="line">// 求一个数组所有子数组中和为零子数组长度最长的。</span><br><span class="line">public class SubArrIsZero &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		int[] arr = &#123; -1, 0, 1, 2, 3, 0, 1, 4, -1, 0 &#125;;</span><br><span class="line">		int len = GetMaxLength(arr);</span><br><span class="line">		System.out.println(len);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private static int GetMaxLength(int[] arr) &#123;</span><br><span class="line">		if (arr == null || arr.length &lt; 1)</span><br><span class="line">			return 0;</span><br><span class="line">		HashMap&lt;Integer, Integer&gt; map = new HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">		// 为了解决从开头第一个位置有一个子数组就是所求</span><br><span class="line">		map.put(0, -1);</span><br><span class="line">		int sum = 0;</span><br><span class="line">		int len = 0;</span><br><span class="line">		for (int i = 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">			sum += arr[i];</span><br><span class="line">			if (!map.containsKey(sum)) &#123;</span><br><span class="line">				map.put(sum, i);</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				int left = map.get(sum);</span><br><span class="line">				len = Math.max(len, (i - left));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return len;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="手撸快排"><a href="#手撸快排" class="headerlink" title="手撸快排"></a>手撸快排</h5><p>排序的重要性不言而喻，在我有限的面试中就已经手写了两次快排了;<br>归并，堆排序，都需要掌握；</p>
+<h5 id="一个总结递推公式的题："><a href="#一个总结递推公式的题：" class="headerlink" title="一个总结递推公式的题："></a>一个总结递推公式的题：</h5><p>这类题只要有递推公式以及边界条件，剩下的就是代码优化；<br>有一个 2xN 的区域，现在用N个2x1的矩形去填充，问总共有多少种方式？<br>破题点：最后一块怎么放？<br>分情况：<br>最后一块竖着放，那么使用前n-1块的形成的方案数量等于用n块的方案数量；<br>最后一块横着放，那么第n-1块必然也是横着放，所以使用前n-2块形成的方案数量等于使用n块的方案数量；<br>那么总方案数量等于以上两种情况的和：f(n) = f(n-1) + f(n-2);<br>且f(1) = 1, f(2) = 2;<br>代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">package YiDianZiXun;</span><br><span class="line">// 矩形覆盖问题</span><br><span class="line">public class Fibonacci &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		int n = 3;</span><br><span class="line">		int res = RectCover(n);</span><br><span class="line">		System.out.println(res);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	private static int RectCover(int target) &#123;</span><br><span class="line">		if (target == 0)</span><br><span class="line">			return 1;</span><br><span class="line">		if (target &lt; 3)</span><br><span class="line">			return target;</span><br><span class="line">		int pre = 1;</span><br><span class="line">		int cur = 2;</span><br><span class="line">		int res = 0;</span><br><span class="line">		for (int i = 3; i &lt;= target; i++) &#123;</span><br><span class="line">			res = pre + cur;</span><br><span class="line">			pre = cur;</span><br><span class="line">			cur = res;</span><br><span class="line">		&#125;</span><br><span class="line">		return res;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h4><h5 id="between-and-用法；"><a href="#between-and-用法；" class="headerlink" title="between and 用法；"></a>between and 用法；</h5>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/算法/" rel="tag"># 算法</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/18/SouGou/" rel="prev" title="搜狗技术面总结">
+      <i class="fa fa-chevron-left"></i> 搜狗技术面总结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/14/StreamingAndDistcp/" rel="next" title="Hadoop Streamig 和 Hadoop Distcp的简单介绍">
+      Hadoop Streamig 和 Hadoop Distcp的简单介绍 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux"><span class="nav-number">1.</span> <span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#wc"><span class="nav-number">1.1.</span> <span class="nav-text">wc</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#grep"><span class="nav-number">1.2.</span> <span class="nav-text">grep</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#date"><span class="nav-number">1.3.</span> <span class="nav-text">date</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#crontab"><span class="nav-number">1.4.</span> <span class="nav-text">crontab</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构与算法"><span class="nav-number">2.</span> <span class="nav-text">数据结构与算法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#给出一个数组-0，1，1，1，2，2，3，3，4，4，5，6，7，8，8-，求出现次数最多的那个数字出现次数，显然应该返回1，出现3次；"><span class="nav-number">2.1.</span> <span class="nav-text">给出一个数组{0，1，1，1，2，2，3，3，4，4，5，6，7，8，8}，求出现次数最多的那个数字出现次数，显然应该返回1，出现3次；</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#给出一个数组-1，0，1，2，3，0，1，4，-1，0-，求和为零的最长连续子序列；"><span class="nav-number">2.2.</span> <span class="nav-text">给出一个数组{-1，0，1，2，3，0，1，4，-1，0}，求和为零的最长连续子序列；</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#手撸快排"><span class="nav-number">2.3.</span> <span class="nav-text">手撸快排</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#一个总结递推公式的题："><span class="nav-number">2.4.</span> <span class="nav-text">一个总结递推公式的题：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL"><span class="nav-number">3.</span> <span class="nav-text">SQL</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#between-and-用法；"><span class="nav-number">3.1.</span> <span class="nav-text">between and 用法；</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Waterkong"
+      src="/uploads/headpic.jpg">
+  <p class="site-author-name" itemprop="name">Waterkong</p>
+  <div class="site-description" itemprop="description">充满激情，也保持克制</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kongdada" title="GitHub → https://github.com/kongdada" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http:/blog.csdn.net/waterkong" title="http:/blog.csdn.net/waterkong" rel="noopener" target="_blank">CSDN</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.zhihu.com/people/kong-ling-hui-94/activities" title="https://www.zhihu.com/people/kong-ling-hui-94/activities" rel="noopener" target="_blank">知乎</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://tensory.online/" title="http://tensory.online/" rel="noopener" target="_blank">Tensory</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Waterkong</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.getAttribute('data-flag-title');
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=qpetg5XTkH9AOlcKxBRsJ9pC-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'qpetg5XTkH9AOlcKxBRsJ9pC-gzGzoHsz',
+            'X-LC-Key': 'Bg1GPag7MFxV88X2phtwhoOR',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'qpetg5XTkH9AOlcKxBRsJ9pC-gzGzoHsz',
+      appKey: 'Bg1GPag7MFxV88X2phtwhoOR',
+      placeholder: "Just go go",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: false,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
