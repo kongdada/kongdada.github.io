@@ -1,10 +1,11 @@
 ---
-title: AQS前传
+title: AQS系列之起始篇-volatile和unsafe理解和使用
 date: 2020-01-16 17:57:26
 tags: [Java]
 categories: Java
 ---
-我来填坑，第一篇先不讲AQS,打算先说清楚AQS的一些相关知识。这样后续再看AQS会比较容易理解；
+我来填坑，第一篇先不讲AQS,打算先说清楚AQS的一些相关知识。这样后续再看AQS会比较容易理解；如果内容有误，麻烦留言斧正，有疑问请关注公众号私信交流共同成长！
+这一篇主要讲vloatile关键字和Unsafe类。
 <!-- more -->
 
 #### volatile 关键字
@@ -111,7 +112,7 @@ c=1
 ![](\uploads\volatile01.png)
 
 4. 由此，个人理解是第一项是读取volatile变量b，第二项是读取一般变量c，此时要避免重排序，在这两个指令之间必然会有内存屏障；
-5. 内存屏障的作用：不管读还是写，都会吧当前缓冲区给刷新，刷新了缓冲区自然拿到了变量c的最新值1；
+5. 内存屏障的作用：不管读还是写，都会把当前缓冲区给刷新，刷新了缓冲区自然拿到了变量c的最新值1；
 TIPS: 在这一类跟高速缓冲区有关的测试代码中，要仔细思考 System.out.println 的使用时机，因为println方法的底层使用了synchronized关键字，这个关键字也会刷新当前缓冲区，这样会对你的实验造成影响：
 ```
     public void println(String x) {
@@ -222,10 +223,49 @@ main end
 看明白了以上两个神器，我们就可以尝试写一个锁；
 想想看我们的锁需要什么？
 1. 我们需要一个变量state作为标识，标识我这个锁有没有被占用；这个变量还必须声明成volatile的，这个变量的改变要保证所有线程可见；
-2. 我们需要一个队列，当有并发获取锁的时候，只有一个线程能获取到，其他线程要被阻塞在这个队列中，等待唤醒；
-3. 并发更新我们的标识变量我们要使用CAS来保证一个正确性，我们还要使用线程的挂起与唤醒，所以我们得有一个unsafe对象；
+2. 我们需要一个队列，当有并发获取锁的时候，只有一个线程能获取到，其他线程要被阻塞在这个队列中，然后等待被唤醒；我们使用一个双向链表来做这个队列，队列的每一个节点Node要有三个属性，能保存Thread保存指向前一个节点的指针prev，指向后一个节点的指针next;
+3. 并发更新标识变量和并发更新阻塞队列都需要使用CAS更新来保证正确性，我们还要使用线程的挂起与唤醒，所以我们得有一个unsafe对象；
 
-我们的代码如下：
+首先是Node，阻塞队列的节点
+```
+public class Node {
+    /**
+     * 存储的元素为线程
+     */
+    Thread thread;
+    /**
+     * 前一个节点（可以没有，但实现起来很困难）
+     */
+    Node prev;
+    /**
+     * 后一个节点
+     */
+    Node next;
+
+    public Node() {
+    }
+
+    public Node(Thread thread, Node prev) {
+        this.thread = thread;
+        this.prev = prev;
+    }
+}
+```
+
+然后实现锁：
+属性有: 
+- 一个标识变量state，被volatiel修饰；
+- 阻塞队列的首尾指针head tail；
+- 一个unsafe对象；
+- state的偏移量stateOffset
+方法有：
+- 构造方法，负责初始化阻塞队列的首尾指针；
+- 加锁lock;
+- 释放锁unlock;
+- 加入阻塞队列抽成一个方法enqueue;
+
+
+具体实现如下：
 ```
 public class MyLock {
     /**
@@ -334,7 +374,7 @@ public class MyLock {
          */
         Node node = enqueue();
         Node prev = node.prev;
-        // 再次尝试获取锁，需要检测上一个节点是不是head，按入队顺序加锁
+        // 再次尝试获取锁，需要检测上一个节点是不是head，
         while (node.prev != head || !compareAndSetState(0, 1)) {
             // 未获取到锁，阻塞
             unsafe.park(false, 0L);
@@ -370,17 +410,12 @@ public class MyLock {
 
     public static void main(String[] args) throws InterruptedException {
 
-        testTong();
-
-    }
-
-    private static void testTong() throws InterruptedException {
         MyLock myLock = new MyLock();
         CountDownLatch countDownLatch = new CountDownLatch(1000);
         IntStream.range(0, 1000).forEach(i -> new Thread(() -> {
             myLock.lock();
             try {
-                IntStream.range(0, 10000).forEach(j -> {
+                IntStream.range(0, 1000).forEach(j -> {
                     count++;
                 });
             } finally {
@@ -391,10 +426,41 @@ public class MyLock {
         countDownLatch.await();
         System.out.println(count);
     }
+
 }
 ```
+
 - 加锁：
 假设有三个线程一起执行加锁：
-1. 只有一个线程A成功将state更新成了1，占有了锁，线程B跟线程C只好去阻塞在队列中；
-2. 线程B和线程C都将自己包装成一个Node挂载在队列的尾结点上
+1. 因为有并发所以使用CAS去更新state,只有一个线程A成功将state更新成了1，占有了锁，线程B跟线程C只好去阻塞在队列中；
+2. 线程B和线程C都将自己包装成一个Node挂载在队列的尾结点上；入队还是一个并发操作，所以也要使用CAS去更新tail变量，更新成功的就成功入队，失败的自旋尝试入队，直到成功加入阻塞队列
+3. 假设线程B先入队，然后先需要先判断一下自己的前一个节点是不是头结点，如果他的前一个节点不是head，直接阻塞；线程B到此挂起；如果前一个节点是头结点，那么自己是阻塞的第一个线程，可以再次尝试获取一次锁；获取锁失败，也挂起自己；
+4. 线程在哪阻塞，被唤醒就会继续执行，所以这一块也要考虑到唤醒之后，要做的动作，理论上被唤醒的应该是第一个阻塞的线程，所以唤醒后也要再次去获取锁；
+5. 假设被唤醒后，也成功获得了锁，当前要把head节点向后移动一位，也就是将自己出队，然后帮助GC，把用不到的变量赋值成null;
 
+- 释放锁：
+释放锁不会有并发，因为只有持有锁，我们才会去释放锁，这儿不讨论，不持有锁的线程去释放锁。因为只是自己写得例子，在实际的AQS实现中，必然是先要确认当前线程必须要持有锁。
+1. 将state直接更新为0，代表释放锁；
+2. 判断阻塞队列中是否还设有阻塞的线程，如果有则唤醒它；
+
+- 怎么验证我们写得锁是不是好用呢？
+在测试类中起1000个线程，每一个线程都先获取锁，然后对初始化为0的静态变量count，做1000次自增运算，然后释放锁；
+如果我们写得锁没有问题，自然应该输出1000*1000；
+测试输出结果：
+```
+#省略一部分打印的日志
+tt-995lock
+tt-995unlock
+tt-987lock
+tt-987unlock
+1000000
+```
+##### END
+第一篇到此为止，看到这里其实已经掌握了AQS最核心的那一部分；
+后面会结合着ReentrantLock和ReentrantReadWriteLock以及CountDownLatch来说一说源代码的具体实现；
+欢迎公众号一起交流：
+![](\uploads\headpic.jpg)
+
+#### 推荐资料
+[Java内存访问重排序的研究](https://tech.meituan.com/2014/09/23/java-memory-reordering.html)
+[Java魔法类：Unsafe应用解析](https://tech.meituan.com/2019/02/14/talk-about-java-magic-class-unsafe.html)
