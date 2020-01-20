@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kongdada.github.io/2020/01/16/aqs1/</loc>
+    
+    <lastmod>2020-01-20T02:07:43.248Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://kongdada.github.io/tags/index.html</loc>
     
     <lastmod>2020-01-13T03:42:26.997Z</lastmod>
@@ -30,13 +37,6 @@
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2018/08/29/shellPit01/</loc>
-    
-    <lastmod>2020-01-13T03:42:26.995Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://kongdada.github.io/2017/12/01/start-hive/</loc>
     
     <lastmod>2020-01-13T03:42:26.995Z</lastmod>
@@ -44,23 +44,9 @@
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/1896/12/23/lifeNum03/</loc>
+    <loc>https://kongdada.github.io/2018/08/29/shellPit01/</loc>
     
-    <lastmod>2020-01-13T03:42:26.994Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://kongdada.github.io/1897/04/01/lifeNum04/</loc>
-    
-    <lastmod>2020-01-13T03:42:26.994Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://kongdada.github.io/1896/12/15/lifeNum02/</loc>
-    
-    <lastmod>2020-01-13T03:42:26.993Z</lastmod>
+    <lastmod>2020-01-13T03:42:26.995Z</lastmod>
     
   </url>
   
@@ -72,14 +58,14 @@
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2018/12/12/jira/</loc>
+    <loc>https://kongdada.github.io/2017/11/30/hadoop2-8-0_built/</loc>
     
     <lastmod>2020-01-13T03:42:26.992Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2017/11/30/hadoop2-8-0_built/</loc>
+    <loc>https://kongdada.github.io/2018/12/12/jira/</loc>
     
     <lastmod>2020-01-13T03:42:26.992Z</lastmod>
     
@@ -142,14 +128,14 @@
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2018/04/18/SouGou/</loc>
+    <loc>https://kongdada.github.io/2018/03/29/RiZhiYi/</loc>
     
     <lastmod>2020-01-13T03:42:26.987Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://kongdada.github.io/2018/03/29/RiZhiYi/</loc>
+    <loc>https://kongdada.github.io/2018/04/18/SouGou/</loc>
     
     <lastmod>2020-01-13T03:42:26.987Z</lastmod>
     
@@ -173,13 +159,6 @@
     <loc>https://kongdada.github.io/2017/11/20/MarkDown/</loc>
     
     <lastmod>2020-01-13T03:42:26.984Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://kongdada.github.io/1896/08/16/FuckLifeNum01/</loc>
-    
-    <lastmod>2020-01-13T03:42:26.983Z</lastmod>
     
   </url>
   

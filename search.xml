@@ -1,6 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>AQS系列之起始篇-volatile和unsafe理解和使用</title>
+    <url>/2020/01/16/aqs1/</url>
+    <content><![CDATA[<p>我来填坑，第一篇先不讲AQS,打算先说清楚AQS的一些相关知识。这样后续再看AQS会比较容易理解；如果内容有误，麻烦留言斧正，有疑问请关注公众号私信交流共同成长！<br>这一篇主要讲vloatile关键字和Unsafe类。<br><a id="more"></a></p>
+<h4 id="volatile-关键字"><a href="#volatile-关键字" class="headerlink" title="volatile 关键字"></a>volatile 关键字</h4><p>我们都知道volatile关键字，是通过内存屏障实现了两个特性：</p>
+<ul>
+<li>可见性：假设两个线程A和B同时从主内存中读取了同一个变量c，线程A修改了变量c，会及时写回主内存，并且使线程B持有的变量c失效，然后线程B从主内存读取到被线程A修改过的变量。这样就保证了可见性；</li>
+<li>避免指令重排序，这个就是在volatile变量前后加了内存屏障，可以当成一个标识，在这个标识前后的指令，不能进行重排序。</li>
+</ul>
+<h5 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h5><p>来看第一段代码，证明一下可见性：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class VolatileTest2 &#123;</span><br><span class="line">    private static volatile Integer c = 0;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            while (true) &#123;</span><br><span class="line">                if (c == 0) &#123;</span><br><span class="line">                    System.out.println(&quot;ac = &quot; + c);</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    System.out.println(&quot;bc = &quot; + c);</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            c = 1;</span><br><span class="line">        &#125;).start();</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ac = 0</span><br><span class="line">ac = 0</span><br><span class="line">ac = 0</span><br><span class="line">ac = 0</span><br><span class="line">ac = 0</span><br><span class="line">ac = 0</span><br><span class="line">ac = 0</span><br><span class="line">ac = 0</span><br><span class="line">bc = 1</span><br></pre></td></tr></table></figure></p>
+<p>同时起了两个线程，一个线程对volatile变量的修改，对于另一个线程来说是可见的。</p>
+<h5 id="避免重排序"><a href="#避免重排序" class="headerlink" title="避免重排序"></a>避免重排序</h5><p>第二段代码，想说明的是volatile修饰的变量不仅影响变量自身，而且会影响他前后变量。这个也就是volatile会避免指令重排序这个特性的解释：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class VolatileTest4 &#123;</span><br><span class="line">    // a不使用volatile修饰</span><br><span class="line">    public static long a = 0;</span><br><span class="line">    // 消除缓存行的影响</span><br><span class="line">    public static long p1, p2, p3, p4, p5, p6, p7;</span><br><span class="line">    // b使用volatile修饰</span><br><span class="line">    public static volatile long b = 0;</span><br><span class="line">    // 消除缓存行的影响</span><br><span class="line">    public static long q1, q2, q3, q4, q5, q6, q7;</span><br><span class="line">    // c不使用volatile修饰</span><br><span class="line">    public static long c = 0;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            while (a == 0) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">//                    long x = b;</span><br><span class="line">                &#125; catch (Exception ex) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(&quot;a=&quot; + a);</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            while (c == 0) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    long x = b;</span><br><span class="line">                &#125; catch (Exception ex) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(&quot;c=&quot; + c);</span><br><span class="line">        &#125;).start();</span><br><span class="line">        Thread.sleep(100);</span><br><span class="line">        a = 1;</span><br><span class="line">        b = 1;</span><br><span class="line">        c = 1;</span><br><span class="line">        System.out.println(&quot;main end&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">main end</span><br><span class="line">c=1</span><br></pre></td></tr></table></figure></p>
+<p>上面提到的消除缓存行的影响，如果感兴趣可以搜索关键词“伪共享”去了解。<br>再说回这段代码：</p>
+<ol>
+<li>同时启动两个线程，然后主线程休眠100毫秒，这个主要为了保证两个子线程都已经启动了。</li>
+<li>主线程分别修改abc三个变量的值，b是volatile修饰的，所以两个子线程是可见这个这个变量的改变的。但是ac两个变量对于子线程来说，是不可见的，两个子线程分别持有的a和c的值目前还是0；</li>
+<li>但是当子线程再次访问了变量b( long x = b;)，我们发现子线程持有的变量c居然是1了。这就证明了volatile变量不但对自己本身有影响并且对执行到的上下行也有影响；</li>
+</ol>
+<p>我们来看张图，是volatile变量对前后执行行的影响：<br><img src="\uploads\volatile01.png" alt></p>
+<ol start="4">
+<li>由此，个人理解是第一项是读取volatile变量b，第二项是读取一般变量c，此时要避免重排序，在这两个指令之间必然会有内存屏障；</li>
+<li>内存屏障的作用：不管读还是写，都会把当前缓冲区给刷新，刷新了缓冲区自然拿到了变量c的最新值1；<br>TIPS: 在这一类跟高速缓冲区有关的测试代码中，要仔细思考 System.out.println 的使用时机，因为println方法的底层使用了synchronized关键字，这个关键字也会刷新当前缓冲区，这样会对你的实验造成影响：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public void println(String x) &#123;</span><br><span class="line">    synchronized (this) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="Unsafe类"><a href="#Unsafe类" class="headerlink" title="Unsafe类"></a>Unsafe类</h4><p>这个类在AQS中起到了很大的作用,我们要使用他的CAS和挂起线程唤醒线程；</p>
+<h5 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h5><p>他提供了现成的CAS方法：先比较再重置，比如对变量a的更新，分三步：</p>
+<ol>
+<li>从主内存读取a；</li>
+<li>将读取到的a改变;</li>
+<li>将改变后的a写回主内存之前，先判断主内存中的a跟自己一开始读取到的a是相等的。确认这个条件后，将改变后的a写入主内存；<br>CAS能够保证在并发环境下，我们正确的更新变量：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class Counter &#123;</span><br><span class="line">    private volatile int count = 0;</span><br><span class="line">    private static long offset;</span><br><span class="line">    private static Unsafe unsafe;</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            Field f = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);</span><br><span class="line">            f.setAccessible(true);</span><br><span class="line">            unsafe = (Unsafe) f.get(null);</span><br><span class="line">            // 获得count的存储位置</span><br><span class="line">            offset = unsafe.objectFieldOffset(Counter.class.getDeclaredField(&quot;count&quot;));</span><br><span class="line">        &#125; catch (Exception ex) &#123;</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void increment() &#123;</span><br><span class="line">        int before = count;</span><br><span class="line">        while (!unsafe.compareAndSwapInt(this, offset, before, before + 1)) &#123;</span><br><span class="line">            System.out.println(&quot;increment &quot; + count);</span><br><span class="line">            before = count;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getCount() &#123;</span><br><span class="line">        return count;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception&#123;</span><br><span class="line">        Counter counter = new Counter();</span><br><span class="line">        ExecutorService threadPool = new ThreadPoolExecutor(12, 20, 5,</span><br><span class="line">                TimeUnit.SECONDS, new ArrayBlockingQueue(100));</span><br><span class="line">        // 起100个线程，每个线程自增1000次</span><br><span class="line">        IntStream.range(0, 100).forEach(i -&gt; &#123;</span><br><span class="line">            threadPool.submit(() -&gt; IntStream.range(0, 1000).forEach(j -&gt; &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + &quot;-----&quot; + j);</span><br><span class="line">                counter.increment();</span><br><span class="line">            &#125;));</span><br><span class="line">        &#125;);</span><br><span class="line">        Thread.sleep(5000);</span><br><span class="line">        threadPool.shutdown();</span><br><span class="line">        // 打印100000</span><br><span class="line">        System.out.println(&quot;count &quot; + counter.getCount());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>CAS操作包含三个操作数 – 内存位置、预期原值及新值。执行CAS操作的时候，将内存位置(offset)的值(count)与预期原值(before)比较，如果相匹配，那么处理器会将该位置值更新为新值，否则，处理器不做任何操作，该方法返回false;<br>测试代码是起了100个线程，每个线程对count自增1000次，如果每一次自增都是正确的，最终count是100*1000。可以自己跑一下，测试；<br>tip: 这一段代码要注意的是我们是通过Unsafe类的theUnsafe字段，通过反射获取到一个unsafe对象；其次就是这个unsafe.compareAndSwapInt()方法；注意参数代表的意义；</p>
+<h5 id="park和unpark"><a href="#park和unpark" class="headerlink" title="park和unpark"></a>park和unpark</h5><p>阻塞和唤醒当前线程<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">private static void finallyTest() throws Exception &#123;</span><br><span class="line">    Field f = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);</span><br><span class="line">    f.setAccessible(true);</span><br><span class="line">    Unsafe unsafe = (Unsafe) f.get(null);</span><br><span class="line"></span><br><span class="line">    Thread thread = new Thread(() -&gt; &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            System.out.println(&quot;try me&quot;);</span><br><span class="line">            unsafe.park(false,0L);</span><br><span class="line">        &#125; catch (Exception ex) &#123;</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            System.out.println(&quot;finally&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    thread.start();</span><br><span class="line">    Thread.sleep(10);</span><br><span class="line">    System.out.println(&quot;main end&quot;);</span><br><span class="line">    unsafe.unpark(thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>结果：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">try me</span><br><span class="line">main end</span><br></pre></td></tr></table></figure></p>
+<p>这段代码中:</p>
+<ol>
+<li>我们启动一个线程打印“try me”之后挂起。</li>
+<li>主线程休眠10毫秒，这是为了保证子线程能够执行到挂起那一段代码；主线程打印“main end”之后再唤醒子线程;</li>
+<li>子线程唤醒后继续执行打印“finally”;</li>
+</ol>
+<h4 id="写一个锁"><a href="#写一个锁" class="headerlink" title="写一个锁"></a>写一个锁</h4><p>看明白了以上两个神器，我们就可以尝试写一个锁；<br>想想看我们的锁需要什么？</p>
+<ol>
+<li>我们需要一个变量state作为标识，标识我这个锁有没有被占用；这个变量还必须声明成volatile的，这个变量的改变要保证所有线程可见；</li>
+<li>我们需要一个队列，当有并发获取锁的时候，只有一个线程能获取到，其他线程要被阻塞在这个队列中，然后等待被唤醒；我们使用一个双向链表来做这个队列，队列的每一个节点Node要有三个属性，能保存Thread保存指向前一个节点的指针prev，指向后一个节点的指针next;</li>
+<li>并发更新标识变量和并发更新阻塞队列都需要使用CAS更新来保证正确性，我们还要使用线程的挂起与唤醒，所以我们得有一个unsafe对象；</li>
+</ol>
+<p>首先是Node，阻塞队列的节点<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class Node &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 存储的元素为线程</span><br><span class="line">     */</span><br><span class="line">    Thread thread;</span><br><span class="line">    /**</span><br><span class="line">     * 前一个节点（可以没有，但实现起来很困难）</span><br><span class="line">     */</span><br><span class="line">    Node prev;</span><br><span class="line">    /**</span><br><span class="line">     * 后一个节点</span><br><span class="line">     */</span><br><span class="line">    Node next;</span><br><span class="line"></span><br><span class="line">    public Node() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Node(Thread thread, Node prev) &#123;</span><br><span class="line">        this.thread = thread;</span><br><span class="line">        this.prev = prev;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后实现锁：<br>属性有: </p>
+<ul>
+<li>一个标识变量state，被volatiel修饰；</li>
+<li>阻塞队列的首尾指针head tail；</li>
+<li>一个unsafe对象；</li>
+<li>state的偏移量stateOffset<br>方法有：</li>
+<li>构造方法，负责初始化阻塞队列的首尾指针；</li>
+<li>加锁lock;</li>
+<li>释放锁unlock;</li>
+<li>加入阻塞队列抽成一个方法enqueue;</li>
+</ul>
+<p>具体实现如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class MyLock &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 用来标识锁有没有被占用</span><br><span class="line">     */</span><br><span class="line">    private volatile int state;</span><br><span class="line">    /**</span><br><span class="line">     * 用它实现CAS操作和操作线程</span><br><span class="line">     */</span><br><span class="line">    private static Unsafe unsafe;</span><br><span class="line">    private static long stateOffset;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 链表头</span><br><span class="line">     */</span><br><span class="line">    private volatile Node head;</span><br><span class="line">    /**</span><br><span class="line">     * 链表尾</span><br><span class="line">     */</span><br><span class="line">    private volatile Node tail;</span><br><span class="line">    private static long tailOffset;</span><br><span class="line">    static final Node EMPTY = new Node();</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            Field f = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);</span><br><span class="line">            f.setAccessible(true);</span><br><span class="line">            unsafe = (Unsafe) f.get(null);</span><br><span class="line">            stateOffset = unsafe.objectFieldOffset(MyLock.class.getDeclaredField(&quot;state&quot;));</span><br><span class="line">            tailOffset = unsafe.objectFieldOffset(MyLock.class.getDeclaredField(&quot;tail&quot;));</span><br><span class="line">        &#125; catch (Exception ex) &#123;</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public MyLock() &#123;</span><br><span class="line">        head = tail = EMPTY;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 原子更新锁状态</span><br><span class="line">     *</span><br><span class="line">     * @param expect</span><br><span class="line">     * @param update</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private boolean compareAndSetState(int expect, int update) &#123;</span><br><span class="line">        return unsafe.compareAndSwapInt(this, stateOffset, expect, update);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 对队尾的原子操作</span><br><span class="line">     *</span><br><span class="line">     * @param expect</span><br><span class="line">     * @param update</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private boolean compareAndSetTail(Node expect, Node update) &#123;</span><br><span class="line">        return unsafe.compareAndSwapObject(this, tailOffset, expect, update);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private synchronized void printQueue() &#123;</span><br><span class="line">        Node temp = head;</span><br><span class="line">        while (Objects.nonNull(temp.next)) &#123;</span><br><span class="line">            System.out.print(temp.next.thread.getName() + &quot;##&quot;);</span><br><span class="line">            temp = temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 入队</span><br><span class="line">     *</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private Node enqueue() &#123;</span><br><span class="line">        while (true) &#123;</span><br><span class="line">            // 获取尾节点</span><br><span class="line">            Node t = tail;</span><br><span class="line">            // 构造新节点</span><br><span class="line">            Node node = new Node(Thread.currentThread(), t);</span><br><span class="line">            // 不断尝试原子更新尾节点</span><br><span class="line">            if (compareAndSetTail(t, node)) &#123;</span><br><span class="line">                // 更新尾节点成功了，让原尾节点的next指针指向当前节点</span><br><span class="line">                t.next = node;</span><br><span class="line"></span><br><span class="line">//                printQueue();</span><br><span class="line"></span><br><span class="line">                return node;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 加锁</span><br><span class="line">     */</span><br><span class="line">    public void lock() &#123;</span><br><span class="line">        // 尝试更新state字段，更新成功说明占有了锁</span><br><span class="line">        if (compareAndSetState(0, 1)) &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + &quot;lock&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        /**</span><br><span class="line">         *  未更新成功则入队，所有没获得锁的线程都会重复执行入队，直到成功入队</span><br><span class="line">         *  也就是所有没获得锁的线程，都会阻塞在入队操作</span><br><span class="line">         */</span><br><span class="line">        Node node = enqueue();</span><br><span class="line">        Node prev = node.prev;</span><br><span class="line">        // 再次尝试获取锁，需要检测上一个节点是不是head，</span><br><span class="line">        while (node.prev != head || !compareAndSetState(0, 1)) &#123;</span><br><span class="line">            // 未获取到锁，阻塞</span><br><span class="line">            unsafe.park(false, 0L);</span><br><span class="line">        &#125;</span><br><span class="line">        /**下面不需要原子更新，因为同时只有一个线程访问到这里</span><br><span class="line">         * 到这里的条件是：上一个节点是head，并且获得了锁</span><br><span class="line">         * head后移一位，其实就是head要出队</span><br><span class="line">         */</span><br><span class="line">        head = node;</span><br><span class="line">        // 清空当前节点的内容，协助GC</span><br><span class="line">        node.thread = null;</span><br><span class="line">        node.prev = null;</span><br><span class="line">        prev.next = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 解锁</span><br><span class="line">     */</span><br><span class="line">    public void unlock() &#123;</span><br><span class="line">        // 把state更新成0，这里不需要原子更新，因为同时只有一个线程访问到这里</span><br><span class="line">        state = 0;</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + &quot;unlock&quot;);</span><br><span class="line">        // 下一个待唤醒的节点</span><br><span class="line">        Node next = head.next;</span><br><span class="line">        // 下一个节点不为空，就唤醒它</span><br><span class="line">        if (next != null) &#123;</span><br><span class="line">            unsafe.unpark(next.thread);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static int count = 0;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        MyLock myLock = new MyLock();</span><br><span class="line">        CountDownLatch countDownLatch = new CountDownLatch(1000);</span><br><span class="line">        IntStream.range(0, 1000).forEach(i -&gt; new Thread(() -&gt; &#123;</span><br><span class="line">            myLock.lock();</span><br><span class="line">            try &#123;</span><br><span class="line">                IntStream.range(0, 1000).forEach(j -&gt; &#123;</span><br><span class="line">                    count++;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                myLock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">            countDownLatch.countDown();</span><br><span class="line">        &#125;, &quot;tt-&quot; + i).start());</span><br><span class="line">        countDownLatch.await();</span><br><span class="line">        System.out.println(count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>加锁：<br>假设有三个线程一起执行加锁：</li>
+</ul>
+<ol>
+<li>因为有并发所以使用CAS去更新state,只有一个线程A成功将state更新成了1，占有了锁，线程B跟线程C只好去阻塞在队列中；</li>
+<li>线程B和线程C都将自己包装成一个Node挂载在队列的尾结点上；入队还是一个并发操作，所以也要使用CAS去更新tail变量，更新成功的就成功入队，失败的自旋尝试入队，直到成功加入阻塞队列</li>
+<li>假设线程B先入队，然后先需要先判断一下自己的前一个节点是不是头结点，如果他的前一个节点不是head，直接阻塞；线程B到此挂起；如果前一个节点是头结点，那么自己是阻塞的第一个线程，可以再次尝试获取一次锁；获取锁失败，也挂起自己；</li>
+<li>线程在哪阻塞，被唤醒就会继续执行，所以这一块也要考虑到唤醒之后，要做的动作，理论上被唤醒的应该是第一个阻塞的线程，所以唤醒后也要再次去获取锁；</li>
+<li>假设被唤醒后，也成功获得了锁，当前要把head节点向后移动一位，也就是将自己出队，然后帮助GC，把用不到的变量赋值成null;</li>
+</ol>
+<ul>
+<li>释放锁：<br>释放锁不会有并发，因为只有持有锁，我们才会去释放锁，这儿不讨论，不持有锁的线程去释放锁。因为只是自己写得例子，在实际的AQS实现中，必然是先要确认当前线程必须要持有锁。</li>
+</ul>
+<ol>
+<li>将state直接更新为0，代表释放锁；</li>
+<li>判断阻塞队列中是否还设有阻塞的线程，如果有则唤醒它；</li>
+</ol>
+<ul>
+<li>怎么验证我们写得锁是不是好用呢？<br>在测试类中起1000个线程，每一个线程都先获取锁，然后对初始化为0的静态变量count，做1000次自增运算，然后释放锁；<br>如果我们写得锁没有问题，自然应该输出1000*1000；<br>测试输出结果：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#省略一部分打印的日志</span><br><span class="line">tt-995lock</span><br><span class="line">tt-995unlock</span><br><span class="line">tt-987lock</span><br><span class="line">tt-987unlock</span><br><span class="line">1000000</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="END"><a href="#END" class="headerlink" title="END"></a>END</h5><p>第一篇到此为止，看到这里其实已经掌握了AQS最核心的那一部分；<br>后面会结合着ReentrantLock和ReentrantReadWriteLock以及CountDownLatch来说一说源代码的具体实现；<br>欢迎公众号一起交流：<br><img src="\uploads\headpic.jpg" alt></p>
+<h4 id="推荐资料"><a href="#推荐资料" class="headerlink" title="推荐资料"></a>推荐资料</h4><p><a href="https://tech.meituan.com/2014/09/23/java-memory-reordering.html" target="_blank" rel="noopener">Java内存访问重排序的研究</a><br><a href="https://tech.meituan.com/2019/02/14/talk-about-java-magic-class-unsafe.html" target="_blank" rel="noopener">Java魔法类：Unsafe应用解析</a></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>前端json传参，后端spring如何承接</title>
     <url>/2020/01/11/json4spring/</url>
     <content><![CDATA[<p>第一篇公众号就讲个很简单的问题吧。前些天重构中前端传过来的参数突然就接受不到了。究其根本就是前端同学统一换了参数的提交格式，从 application/x-www-form-urlencoded 更换成 application/json。一句话解释本文就是 application/json 需要搭配 @RequestBody 使用。<br><a id="more"></a></p>
@@ -866,149 +959,6 @@
       </categories>
       <tags>
         <tag>MarkDown</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>人生十之八九不如意</title>
-    <url>/1897/04/01/lifeNum04/</url>
-    <content><![CDATA[<p>我现在严重怀疑我上辈子大概是佛祖吧，转世投胎到这辈子，还残留着一点点预言或者先知的能力。一言成谶的事儿没少干，我都想毁了我这张臭嘴。<br>简而言之就是在上个周末跟朋友说，最近互联网情况不太乐观，下次见到我，说不定我就被裁了。<br>嗯！应验了，周三通知被裁了，周五离职手续都办完，走人啦！<br><a id="more"></a></p>
-<h4 id="离职初体验"><a href="#离职初体验" class="headerlink" title="离职初体验"></a>离职初体验</h4><p>这段应该在上个周末来写，可能情绪最为饱满，骂人也骂的酣畅。其实被裁员这事儿说大也大，说小，也算不上什么毁天灭地；我是苦出身，现在的工作得来也不算容易，所以期望稳稳妥妥的进行换工作，现在这个间隔期等于是失业状态。一开始确实很难以接受被裁员这回事。因为这从根本上来说，是公司对你个人的不认同。就这一条就足够你怀疑自己。但是结合实际情况来看，不是个例，一起入职的小伙伴一起去办了离职。公司放弃了一批年轻人。</p>
-<h4 id="离职再体验"><a href="#离职再体验" class="headerlink" title="离职再体验"></a>离职再体验</h4><p>等到渡过了最难过，情绪最繁杂的那几天。应该在这个时间段再回味一遍，发生了什么。自己的应对与处理是不是合适。一定有可以改正的错误。<br>今天算是情绪与逻辑都回归的第一天，度过这段繁杂的情绪肯定要浪费掉一段时间。幸亏我不是一个人住，有很多好朋友，也用开玩笑的方式，笑骂了这些屁事儿；</p>
-<h4 id="回看过往的一年"><a href="#回看过往的一年" class="headerlink" title="回看过往的一年"></a>回看过往的一年</h4><h5 id="承认自己的不足"><a href="#承认自己的不足" class="headerlink" title="承认自己的不足"></a>承认自己的不足</h5><ul>
-<li>与同组同事相比较，技术能力上来说，确实相差较多。</li>
-<li>参加工作后确实有一段时间大概两个多月，是不够用心去学习的，放松了自己。这确实导致了成长速度缓慢。</li>
-<li>讲故事能力。</li>
-</ul>
-<h5 id="为自己不足找借口，说原因"><a href="#为自己不足找借口，说原因" class="headerlink" title="为自己不足找借口，说原因"></a>为自己不足找借口，说原因</h5><ul>
-<li><p>的确我原来不是写Java的，也不搞Spring。转到这个方向，半年时间，现在可以说是用起来了这一套工具，也熟悉了开发的整个流程；自己负责一个模块去迭代的话也可以。但我的这些同事不是正当打的两三年选手，就是经验丰富的老手。确实很难相提并论。如果要博取一丝的机会，现在的成长速度的确不够；回过头看这一点，距离自我要求确实不达标。还是对自己放松了要求。</p>
-</li>
-<li><p>持续进步，持续努力真的是程序员必备的习惯。搞那种突破性的学习，长期来看，收益确实比较低下。每天进步一点点就可以，每天可以抽一个小时给自己学学新东西，技术积累也急不得。摆平心态，继续努力！</p>
-</li>
-<li><p>所谓讲故事能力，主要体现在一些分享或者工作总结上，的确大多数的程序员，包括我，一提到这件事情态度就是，技术学好，技术牛逼不就行了！但是啊，技术牛逼不到一定的地步，就是没有牛逼到同事都夸赞你的这个地步。还是不要抱有这种态度为好！我们太多的人只能是普普通通，平平凡凡的程序员。你的老板是没有渠道去看到你为具体的事情做了多少努力的。唯一了解你动态，了解你做了什么事情的时候就是这些个不大不小的工作总结。所以工作总结这件事情是相当重要的一件事情。务必把自己做的事情讲清楚，一步步的还要成为一个故事。</p>
-</li>
-<li><p>千言万语，还是保持平常心，认真努力的做事，创造价值。</p>
-</li>
-</ul>
-<h4 id="一些细节"><a href="#一些细节" class="headerlink" title="一些细节"></a>一些细节</h4><h5 id="我的小心谨慎"><a href="#我的小心谨慎" class="headerlink" title="我的小心谨慎"></a>我的小心谨慎</h5><p><code>就像作家隔壁老王说的，她应该对贫穷恨之入骨。没错，从贫穷困境里走出的孩子，我见过一些内心是怀有恨意的。这是生活给他们的烙印。因为不被善待，他们对世界是谨慎而充满敌意的。他们也会把恨转变成力量，也可能读到很高学位，实现很大成就。可他们人格里的自卑阴影，和别人沟通的障碍，可能会终身给他们带来影响。</code></p>
-<ul>
-<li>我开始发现在和别人沟通中，自己性格中那些小心谨慎而充满敌意。当对方表达出惊讶夹杂着不满之后，又迅速觉得是自己理亏，迅速道歉。然后对方变得更加难以理解。 小心敬慎是因为自身不具备抗风险能力，</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Life</category>
-      </categories>
-      <tags>
-        <tag>life</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>给未毕业的你们一些小小的建议</title>
-    <url>/1896/12/23/lifeNum03/</url>
-    <content><![CDATA[<p>最近大学辅导员老师让写一点工作相关的事情，写写找工作的经验，大学应该怎么过等一系列我都没怎么想明白的问题；开玩笑的，还是有一点点感悟的。<br>扯淡完毕，正好就着小学弟问的一些问题，写一点自己的想法，看看就行，各位自己的路始终还是得自己走。<br><a id="more"></a></p>
-<h4 id="问题一览"><a href="#问题一览" class="headerlink" title="问题一览"></a>问题一览</h4><ul>
-<li>你认为你的职业最大的阻力在哪？</li>
-<li>专业知识对从事该职业重不重要？</li>
-<li>平常在工作方面,你每天都做些什么工作?满足你之前的预期吗？</li>
-<li>你的工作的薪资水平如何，有津贴和福利吗？</li>
-<li>我想问一下从事这份工作的人的发展前景或晋升机会如何?</li>
-<li>现在公司工作对职员有哪些要求？</li>
-<li>你为什么选择现在的公司？</li>
-<li>学长工作之余 会做些什么(提升自我or放松)<br>先说说我看完这些问题的感受，说实话这些问题我认为只有少数几个问题问到了点上，大多数问题纵使我口吐莲花般的回答了，也不见得对你们未来有什么帮助。但是我很能理解为什么你们会问出这样的一些问题。因为提问者才大二，要是我在大二估计也会这样问。因为还没真的到被逼迫找工作的时候，想的场景自然没那么丰富。我会以问题为基准回答然后在拓展一些，希望对你们有所帮助。</li>
-</ul>
-<h4 id="你认为你的职业最大的阻力在哪？"><a href="#你认为你的职业最大的阻力在哪？" class="headerlink" title="你认为你的职业最大的阻力在哪？"></a>你认为你的职业最大的阻力在哪？</h4><p>这个问题只能缩小范围来谈，就固定在从学生到参加工作这一个阶段来谈，才能回答的比较好。对于我来说最大的阻力就是技术深度不够，基础知识略显单薄，这也是在我众多次面试中听到的最多的评价。单从课堂上学到的那些知识是不足以应付我现在的工作的。所以打算在大学本科毕业就工作的同学们，还是要在课余时间，投入时间去学习更多的专业知识。</p>
-<h4 id="专业知识对从事该职业重不重要？"><a href="#专业知识对从事该职业重不重要？" class="headerlink" title="专业知识对从事该职业重不重要？"></a>专业知识对从事该职业重不重要？</h4><h5 id="首先说我的职业："><a href="#首先说我的职业：" class="headerlink" title="首先说我的职业："></a>首先说我的职业：</h5><p>程序员</p>
-<h5 id="再说我的答案："><a href="#再说我的答案：" class="headerlink" title="再说我的答案："></a>再说我的答案：</h5><p>专业知识很重要。专业知识决定你能不能找到工作，也决定了你能不能找到一份满意的工作。</p>
-<h5 id="最后说专业知识指的是什么"><a href="#最后说专业知识指的是什么" class="headerlink" title="最后说专业知识指的是什么?"></a>最后说专业知识指的是什么?</h5><p>对于未来有志于加入程序员这一行业的同学来说在校期间做好以下三件事，毕业后找到一份满意的工作就不成问题。</p>
-<ul>
-<li>第一：掌握一门编程语言，我校开的C++是基础，这个学的明白了，后面JAVA就学的比较容易了；</li>
-<li>第二：掌握数据结构，这个不单指这门课程，更加重要的是算法，积极参加我校的ACM比赛。平时刷刷OJ的题目。蓝桥杯记得参加，数统院有你们学长拿过一等奖，不是我。</li>
-<li>第三：工程能力，这个其实在学校如果不关注的话，基本就只剩计算机课设能涉及到了。其实可以自己尝试搭建个网站，这就囊括了很多知识了；<br>以上三点，其实涉及到很多的知识点，其重要程度，依次序降低。因为基础的编程语言能力和算法能力这都是一点一点积累出来的。这是硬实力。而工程能力是可以突击学习的。<br>如果要问我具体的一些知识点，推荐你们多看看牛客网。有很多不错的板块，例如面试经验分享，这一块有写的很详细的。还有一些公司的笔试题，可以了解一下，看看自己会不会；这些都是一手资料，看完自然就不再迷茫了，也自然知道自己该做什么事情了，早做准备，后续会轻松很多。<br>牛客地址：<a href="https://www.nowcoder.com/" target="_blank" rel="noopener">https://www.nowcoder.com/</a><br>顺便推荐一个知识库，这个基本囊括了你毕业之前要学的知识点，这个是一个研究生整理的，你要是能全部掌握，那你就可以挑公司了，而不再是被公司挑；<br>地址： <a href="https://github.com/CyC2018/CS-Notes" target="_blank" rel="noopener">https://github.com/CyC2018/CS-Notes</a></li>
-</ul>
-<h4 id="平常在工作方面-你每天都做些什么工作-满足你之前的预期吗？"><a href="#平常在工作方面-你每天都做些什么工作-满足你之前的预期吗？" class="headerlink" title="平常在工作方面,你每天都做些什么工作?满足你之前的预期吗？"></a>平常在工作方面,你每天都做些什么工作?满足你之前的预期吗？</h4><h5 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h5><p>满足我之前的预期，但会有更多的想法或者说追求；</p>
-<h5 id="每天的工作"><a href="#每天的工作" class="headerlink" title="每天的工作"></a>每天的工作</h5><p>现阶段分两种情况，没有任务或者有任务；</p>
-<ul>
-<li>没有任务就自己学习，因为自己欠缺的还多；</li>
-<li>有任务就是想着怎么完成任务。完成任务一般分两步： 第一步思考这个任务怎么完成，也就是设计程序的大纲，想明白先干什么，后干什么；自己的想法能不能顺利的转换成代码；第二步就是写代码，写完代码，调试代码，跑的通，跑的顺畅；</li>
-<li>多说一点，除了写代码也会有一些开会或者跟同事讨论怎么更好的完成开发；</li>
-</ul>
-<h4 id="你的工作的薪资水平如何，有津贴和福利吗？"><a href="#你的工作的薪资水平如何，有津贴和福利吗？" class="headerlink" title="你的工作的薪资水平如何，有津贴和福利吗？"></a>你的工作的薪资水平如何，有津贴和福利吗？</h4><ul>
-<li>薪资水平也满足之前的预期；</li>
-<li>每个公司都有不同的津贴和福利方案；但大概就是每个月有一定餐费和车费；<br>我所在的公司每个月固定有400块的饭补，如果当天工作超过11个小时有30的晚餐费和70的打车费；福利：每个传统的节日公司会有小礼品赠送，大概价值100元的样子；茶水和咖啡不限量；</li>
-</ul>
-<h4 id="我想问一下从事这份工作的人的发展前景或晋升机会如何"><a href="#我想问一下从事这份工作的人的发展前景或晋升机会如何" class="headerlink" title="我想问一下从事这份工作的人的发展前景或晋升机会如何?"></a>我想问一下从事这份工作的人的发展前景或晋升机会如何?</h4><p>任何行业发展前景都看个人努力，现在热门的行业未来不一定热门；但是计算机行业在可预见的未来依然是很重要的行业，可以放心大胆的加入这个行业；<br>晋升机会，一年一次机会。晋升自然就要涨工资了；只要认真工作吗，机会还是很大的；</p>
-<h4 id="在现在的公司工作对职员有哪些要求？"><a href="#在现在的公司工作对职员有哪些要求？" class="headerlink" title="在现在的公司工作对职员有哪些要求？"></a>在现在的公司工作对职员有哪些要求？</h4><p>抛开品行，道德这些不谈，不是说不重要，是因为大多数人在这个方面都没有问题，所以是个正常人就行；对于做技术的人来说，技术到位，礼貌待人就可以了。</p>
-<h4 id="你为什么选择现在的公司？"><a href="#你为什么选择现在的公司？" class="headerlink" title="你为什么选择现在的公司？"></a>你为什么选择现在的公司？</h4><p>在我所有得到的机会中，现在公司的名声在外而且当时想做的事也很对口，待遇也好，所以就来了哇！<br>扩展一点：<br>都说面试是一个双向选择，其实是公司先选择了你，然后选择权才到你手里。假如你足够优秀，拿到了国内顶尖的那几家互联网公司的offer，那个时候选择才显得有意义，多数人在大多数时候其实是没得选的。因为最好的其实就那几家，能获得其中一家的青睐就去这家吧，不会吃亏。<br>非要说怎么选择，考量的东西每个人的侧重点都会不同，但相同的地方其一是待遇，其二就是做的事情；前者你满意就行，后者你认同就行。</p>
-<h4 id="学长工作之余-会做些什么-提升自我or放松"><a href="#学长工作之余-会做些什么-提升自我or放松" class="headerlink" title="学长工作之余 会做些什么(提升自我or放松)"></a>学长工作之余 会做些什么(提升自我or放松)</h4><p>现阶段工作之余就是放松，因为基本平均下来每个工作日工作时间大概都在十个小时，再加上早晚通勤就要花掉两个小时，剩下来给自己的时间其实不多。所以大部分时间还是选择放松。就我个人来说，我比较喜欢小说，各种类型的都看。周末跟朋友打打游戏。偶尔出去打打球。生活还是挺简单的。</p>
-<h4 id="我认为大学应该怎么过"><a href="#我认为大学应该怎么过" class="headerlink" title="我认为大学应该怎么过"></a>我认为大学应该怎么过</h4><p>我认为大多数人解决一些以下几个问题，大学自然过得比较充实。</p>
-<ul>
-<li>考研与工作选那个：如果考研也是考计算机的研究生（我相信信科大多数人都是这条路），那就没必要迷茫了。计算机相关的东西就一点一点学。上面在专业知识那一块提到的三个点。一个一个的解决吃透，考研与找工作在这三个点上一点都不冲突；</li>
-<li>学什么，怎么学？大一大二，编程语言和数据结构，然后穿插着刷算法题，这样做两年基础绝对不会差；大三想明白走哪个方向，前端还是后端，然后学习对应方向的技术。怎么学，买书（或者去图书馆借，可以先借来看，是好书再买回来），买视频教程。学技术目标就是懂原理能上手；当然看书学的最快，但是入门还是推荐看视频，视频比书籍的好处就是可以实现手把手的教。书籍则侧重原理的讲解，往往会省略掉一些操作细节。这对新手入门并不友好；</li>
-<li>对于下定决心要工作的同学，一定要出去实习。而且越早越好。</li>
-</ul>
-<h4 id="毕业季怎么找工作（或者实习）"><a href="#毕业季怎么找工作（或者实习）" class="headerlink" title="毕业季怎么找工作（或者实习）"></a>毕业季怎么找工作（或者实习）</h4><p>修炼好了功夫，找工作也需要主动出击。线上线下结合。</p>
-<ul>
-<li>线上牛客网的招聘信息汇总最全，心里有底的同学挑着想去的公司投简历，心里没底的把对口的公司都投一遍。然后等待笔试面试就可以了。</li>
-<li>线下9月份可以去总校跑一趟。也有很多机会。我的第一个offer就是在总校找的。有了第一个，必然会有更多个。</li>
-<li>很重要的共识：<br><strong><br>心态要稳，秋招不满意，还有春招。期间隔着接近小半年时间，你经历了秋招，自然明白欠缺的是什么，疯狂的补回来就可以；<br>你觉得面的非常好的公司不一定会要你，不是因为你不好，不要自我否定。这其中可能有很多的因素。坚定相信自己的价值；<br>不卑不亢的去面试吧，你是被挑选的人，也是选择公司的人。
-</strong><h4 id="我的春招面试记录"><a href="#我的春招面试记录" class="headerlink" title="我的春招面试记录"></a>我的春招面试记录</h4><a href="https://kongdada.github.io/archives/page/2/">https://kongdada.github.io/archives/page/2/</a><br>还有任何疑问可以去留言板给我留言。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Life</category>
-      </categories>
-      <tags>
-        <tag>life</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>夜深人静，聊点生活</title>
-    <url>/1896/12/15/lifeNum02/</url>
-    <content><![CDATA[<p>夜深人静，乱七八糟的开头像极了我平淡无奇的前二十四年人生。<br><a id="more"></a></p>
-<h4 id="乱七八糟的开头"><a href="#乱七八糟的开头" class="headerlink" title="乱七八糟的开头"></a>乱七八糟的开头</h4><ul>
-<li>2018年的冬天好像比以往的冬天要更加冷一些，人人都在说资本寒冬来临，人人都在说大环境不好。在肉眼可见的新闻里，企业的日子开始难过，纷纷开始裁员自保，以便顺利度过这个难受的冬天；也确实最近一些日子有很多公司开始裁员，不裁员的也开始停止了招人。恰巧我是一个处在试用期的小菜鸟，所以只好期待公司收益能好点。怎么看呢！关注一点互谅网公司的股票吧。从工作开始也开始关注了一点股票的走势，暂时没有购买的想法与实力，只是关注一下走势，未来也许会尝试一点点。</li>
-<li>相比于前些天的惶恐不安，这两天就有点放肆了。因为转正申请通过了领导审批，按照道理来说会顺利转正啦（但人生哪有顺利的事情！）。只好持有一直以来的良好心态，尽人事听天命。</li>
-</ul>
-<h4 id="夜深人静的白日废话"><a href="#夜深人静的白日废话" class="headerlink" title="夜深人静的白日废话"></a>夜深人静的白日废话</h4><p>从周五看起来这个周末也是平淡无奇，规规矩矩，未来会被想不起来的两天，没有任何特别的味道在里面。但很奇怪的是这个周六的清晨，醒来居然依旧有点疲惫。刷刷手机中午混了一顿麻辣香锅。下午看起来是一个不错的游戏时间。通常酒足饭饱思淫欲，呸！不是。就是午饭吃的有点饱，困了。我最后的记忆是勇士领先国王十几分，看来又是一场不温不火的比赛。妈的，也不认真防守。还是很喜欢去年的大卫西撮着牙花子的样子，真是让人觉得力量感十足，还有点可爱。再醒来就是下午六点了，在屋子里踱了几个来回，算了不想出门煮个面条吃点算了。</p>
-<h4 id="夜深人静的开心时光"><a href="#夜深人静的开心时光" class="headerlink" title="夜深人静的开心时光"></a>夜深人静的开心时光</h4><p>最近迷上了一本小说，名字叫《将夜》。回顾过去的日子我很清楚的记得我几个痴迷小说的点；突然这么一联想还觉得挺有意思一件事。</p>
-<ul>
-<li>第一本叫《挪威的森林》，令人着迷的村上先生。我高二抢了舍友的书来看，都以为是当小黄书来看，我向别人介绍这本书也是说作为小黄书来看的，但是我明白那不是真的。我明白那书里有我需要的孤独感，有我需要的放纵感。现实生活可以限制很多的行为，但思维可以在小说里肆无忌惮的乱冲，那一刻我就是男主人公，我更爱一个像绿子那样的女人。但我知道现实里大概不能有。</li>
-<li>第二是一个系列叫《平凡的生活》，一共三本书。迷上他们的时候正好在高三，也是家庭走向另一个主基调的时刻，放弃种地，开始外出打工。当然了一个家庭的基调要变，哪有那么容易。总有一方希望守旧保持安稳，与此相对另一方希望有点不同，改变当前的困局。免不了的争吵发生，也免不了的情感冲突。正好此时来自黄土高原陕西人孙少平一家给与了我一个看客的身份。虽说2012年2013年生活总归比书中那个年代强，但从一个家庭的角度来讲，所要面对的困难却很类似。此时我也是男主人公，一个从全身心有了自己的想法，并且实践希望做一个家庭的小顶梁柱。当然这其实对于当时的我是一种伤害。因为早开的花，必然过早的衰败。</li>
-<li>第三是一个种类，大学时期看的玄幻。《斗破苍穹》《我欲封天》《大主宰》…后来其实也算是看厌了这个类型。大学时期可能是生活比较安稳，情感也比较安稳，再也没有过那种痴迷某一本书，然后带来醍醐灌顶的感觉。</li>
-<li>在我沉迷于某一本书的时候，我总会感觉到思维在另一个层次。这种感觉真的是太过于美好了。我总能在那个时期完成一些比较艰难的事情。比如在高二的课堂上解决了老师提出来的一道难题，比如在高三从家庭的琐碎中抽离出来，保持平静的复习。不知道以后会不会再有这种时刻，我很怀念那样的时刻。</li>
-<li>其实现在看村上春树依旧很享受他带来的孤独与勇敢，只是再也做不到抽离出另一个精神世界，解决所有艰难的问题。我想写小说的人都是妖怪吧。</li>
-</ul>
-<h4 id="夜深人静的废话"><a href="#夜深人静的废话" class="headerlink" title="夜深人静的废话"></a>夜深人静的废话</h4><ul>
-<li>看小说混合着打游戏，转眼来到了周六的最后半个小时。突然觉得该出去溜达溜达。磨磨蹭蹭，想说服某个舍友跟我出去走走，但是最后还是失败了。因为半夜三更无所事事的出去溜达一圈，怎么看都不太正常。</li>
-<li>凌晨果然和舍友说的一样没有几家开着的店。但是24时的便利店，在这个地方居然有三家，其中两家还是邻居，剩下的一家跟他们隔着一条马路相互遥望。我在第一家店买了一包瓜子，还碰到一个正在买东西的外国小哥。来到北京后见到的外国小哥好像都喜欢味道比较重的香水。在第二家买了一包馍片和玉米肠，结账时他问我手里的瓜子是不是，我告诉他不是。穿过了马路来到了第三家，转了一圈买了一瓶茉莉蜜茶，没有看到我最爱的茉莉清茶。结账时他又问我手里的瓜子是不是，我说实在对面买的。说完我就在想，这个回答好像是一个解释，为什么不直接回答不是呢！</li>
-<li>回来的路上就吃掉了可爱的玉米香肠，好是好就是分量有点少。</li>
-</ul>
-<h4 id="夜深人静"><a href="#夜深人静" class="headerlink" title="夜深人静"></a>夜深人静</h4><ul>
-<li>这么一个精力充沛的夜晚，这么一个安静的夜晚，就不要辜负了吧，不如把纠结了快一个礼拜的小文章好好写完吧。所以我写下了这篇，也是博客第二篇属于聊生活的文章。</li>
-<li>现在我的博客其实对于我自己更加重要，对于陌生的看客一点也不重要。每一篇技术文章，其实是我对自己做的事情的总结，在写文章的过程中，总结整个过程，理清思路就好。为什么开始写这样的生活类的小文章了呢！因为前些日子看了一个老博客主的总结，具体的话早忘了，高瞻远瞩的总结也忘了。但大概可能就是说博客只是一个用来记录思考过程的地方。想写什么就写点什么。因为生活里永远不止技术。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Life</category>
-      </categories>
-      <tags>
-        <tag>life</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>从求职到入职后一个月的生活</title>
-    <url>/1896/08/16/FuckLifeNum01/</url>
-    <content><![CDATA[<p>从求职倒入职一个月，很幸运，在我所有面试中自我感觉发挥的不算最好的公司发给我一个offer。<br>发挥的最好的公司却拒绝了我。<br><a id="more"></a></p>
-<h4 id="求职总结"><a href="#求职总结" class="headerlink" title="求职总结"></a>求职总结</h4><p>除了踏踏实实学技术，写代码。<br>总结来总结去就一句话，“求职要趁早”。<br>所谓一个萝卜一个坑，公司招人也是有成本的，所以招人也没有精力去寻找绝对最优秀的人，而是要找到达标的人，所以努力达到那个标准就好。<br>但假设有两个达标的人，目标公司的这个坑被先参加面试的人给占据了，那么后来者就连面试机会都没了，所以趁早参加求职。把握机会而已。</p>
-<h4 id="毕业季"><a href="#毕业季" class="headerlink" title="毕业季"></a>毕业季</h4><p>毕业季，激动了两次，一次是全场合唱校歌；不知道是激动还是不舍。我分不清其中的感情，到现在也没有把当时的自己理清楚。最有可能是对于学生时代真的结束的不舍得和一丝丝对未来的恐惧。另一次是6.29还是6.30，天！真的健忘。离开宿舍，被恕哥抱着不撒手给惹哭了。你很难想象两个大男人抱一起不撒手的场面，有点滑稽，但很感动。<br>大学四年终究是留下了太多的遗憾。不知道以后要花多少时间来弥补。后来人请努力学习吧，该点的技能早点，一毕业都是白花花的银子估量你的价值。</p>
-<h4 id="入职"><a href="#入职" class="headerlink" title="入职"></a>入职</h4><p>7.4号顺利入职。努力开启新的生活。</p>
-<h4 id="人事变动"><a href="#人事变动" class="headerlink" title="人事变动"></a>人事变动</h4><p>入职一个月之际，正准备开启技术新篇章的时候被通知要换个小组。说实话，第一天很难接受。刚适应的环境，刚打破的人际关系的尴尬期。刚准备好开启新征程。却要被换小组，接受新的技术环境，甚至新的方向。调整了两天，想明白了。毕业基本等于一张白纸，最多自己画了点轮廓，但那么多的细节，先画那个都可以。况且java这个技能迟早都得点。</p>
-<h4 id="最近在做的事"><a href="#最近在做的事" class="headerlink" title="最近在做的事"></a>最近在做的事</h4><p>java spring springMVC  mybatis</p>
-]]></content>
-      <categories>
-        <category>Life</category>
-      </categories>
-      <tags>
-        <tag>life</tag>
       </tags>
   </entry>
 </search>
