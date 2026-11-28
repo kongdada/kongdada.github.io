@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mattpocock/skills 实战指南：安装、全流程上手与企业级落地 · TOUGHNK</title>
+  <title>mattpocock/skills 使用文档 · TOUGHNK</title>
   <link rel="stylesheet" href="/assets/site.css" />
   <script>
     (function(){var t=localStorage.getItem('toughnk-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);})();
@@ -25,51 +25,69 @@
   <div class="layout">
     <aside class="toc">
       <div class="toc-title">目录导航</div>
-      <a href="#sec-0">Step 0：安装与初始化</a>
-      <a href="#sec-1">一、场景选型决策树</a>
-      <a href="#sec-2">二、单需求 6 步主流程</a>
-      <a href="#sec-3">三、高频辅助技能速查</a>
-      <a href="#sec-4">四、企业级项目落地参考</a>
-      <a href="#sec-5">五、7 天低风险试点路线</a>
-      <a href="#refs">参考来源</a>
+      <div id="autoToc"></div>
     </aside>
 
     <main>
       <article>
         <section class="hero">
-          <div class="eyebrow">实操教程 · AI Coding 工作流</div>
-          <h1>mattpocock/skills 实战指南：从安装配置、全流程上手到企业级团队落地</h1>
+          <div class="eyebrow">Documentation · AI Engineering</div>
+          <h1>mattpocock/skills 使用文档</h1>
           <p class="lead">
-            <a href="https://github.com/mattpocock/skills" target="_blank" rel="noopener">mattpocock/skills</a>（MIT 开源，33 万+ Star）不是接管一切的黑盒框架，而是 <strong>27 个小而美、可自由组合的工程 Markdown Skill</strong>。上手它不需要背完 27 条命令——个人开发只需跑通「1 次初始化 + 6 步主流程」，企业落地则聚焦于「知识库前置 + 私有化裁剪 + 生产安全门禁」。
+            <a href="https://github.com/mattpocock/skills" target="_blank" rel="noopener">mattpocock/skills</a>（MIT License）是一套面向软件工程流程的模块化 Markdown Skill 集合，包含 27 个可独立组合的技能。本文档整理其安装配置、任务路径选择、标准开发工作流、团队落地规范，并附有官方 README 与全部 27 个技能的完整中文翻译。
           </p>
           <div class="meta-row">
             <span>2026-11-24</span>
             <span class="tag">AI 工程</span>
-            <span class="tag teal">企业级落地</span>
+            <span class="tag teal">Skills</span>
           </div>
         </section>
 
-        <h2 id="sec-0"><span class="sec-num">STEP 0</span>30 秒安装与仓库初始化</h2>
+        <h2 id="overview">概述与架构</h2>
+        <p>与接管整个仓库的重型 Agent 框架不同，<code>mattpocock/skills</code> 的每个技能均为纯文本 <code>SKILL.md</code>（部分附带脚本或模板），按需加载以控制上下文长度。技能按触发方式分为两层：</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>层级</th><th>触发方式</th><th>代表技能</th><th>职责</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>编排层（User-invoked）</strong></td>
+                <td>开发者输入斜杠命令主动触发</td>
+                <td><code>/grill-with-docs</code>、<code>/to-spec</code>、<code>/to-tickets</code>、<code>/implement-spec</code>、<code>/retro</code></td>
+                <td>控制需求分析、规划、拆分与复盘阶段边界</td>
+              </tr>
+              <tr>
+                <td><strong>纪律层（Model-invoked）</strong></td>
+                <td>Agent 在执行任务时按需自动调用</td>
+                <td><code>tdd</code>、<code>prototype</code>、<code>domain-modeling</code>、<code>code-review</code></td>
+                <td>约束测试驱动开发、原型验证、领域建模与审查标准</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="installation">安装与初始化</h2>
         <div class="callout warn">
-          <div class="callout-title">避坑提示：每个 Agent 只选一种安装方式</div>
-          <p>插件版默认自动更新，而 <code>skills.sh</code> 会把可编辑文件复制到项目中；两者混装会导致每个技能重复出现两份。</p>
+          <div class="callout-title">注意事项</div>
+          <p>同一 Agent 环境仅选择一种安装方式。插件市场版本默认自动更新；<code>skills.sh</code> 会将可编辑的技能文件复制进项目目录。混合安装会导致技能命令重复注册。</p>
         </div>
 
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>使用工具</th><th>推荐安装命令</th><th>更新与特点</th></tr>
+              <tr><th>客户端 / CLI</th><th>安装命令</th><th>更新机制与适用场景</th></tr>
             </thead>
             <tbody>
               <tr>
                 <td><strong>Claude Code</strong></td>
                 <td><code>claude plugin install mattpocock-skills@claude-plugins-official</code></td>
-                <td>官方市场托管，自动更新</td>
+                <td>官方插件市场托管，自动更新</td>
               </tr>
               <tr>
                 <td><strong>Codex</strong></td>
                 <td><code>codex plugin marketplace add mattpocock/skills</code><br/><code>codex plugin add mattpocock-skills@mattpocock</code></td>
-                <td>启动时自动更新</td>
+                <td>客户端启动时自动更新</td>
               </tr>
               <tr>
                 <td><strong>GitHub Copilot</strong></td>
@@ -79,171 +97,279 @@
               <tr>
                 <td><strong>Gemini CLI</strong></td>
                 <td><code>gemini skills install https://github.com/mattpocock/skills.git --path skills/engineering</code></td>
-                <td>按需加 <code>skills/productivity</code></td>
+                <td>可按需追加 <code>skills/productivity</code></td>
               </tr>
               <tr>
-                <td><strong>Cursor / 通用可编辑</strong></td>
+                <td><strong>Cursor / 通用安装</strong></td>
                 <td><code>npx skills@latest add mattpocock/skills -a &lt;agent&gt;</code></td>
-                <td>适合团队 Fork/裁剪；<code>npx skills@latest update</code> 更新</td>
+                <td>适合 Fork 与私有化裁剪；使用 <code>npx skills@latest update</code> 更新</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <p>装完后在目标仓库先跑一次初始化，绑定工单系统（GitHub / GitLab / Jira / 本地文件）、Triage 标签与 <code>GLOSSARY.md</code> / <code>ADR</code> 目录（详见 <a href="https://www.aihero.dev/skills-setup-matt-pocock-skills" target="_blank" rel="noopener">官方说明</a>）：</p>
+        <p>安装完成后，在目标代码仓库根目录执行初始化命令，配置工单系统（GitHub / GitLab / Jira / 本地文件）、Issue 标签规则，以及 <code>GLOSSARY.md</code> 与 <code>ADR</code> 目录路径（参见 <a href="https://www.aihero.dev/skills-setup-matt-pocock-skills" target="_blank" rel="noopener">官方配置说明</a>）：</p>
         <div class="code-wrap">
           <button class="copy-btn" type="button">复制</button>
           <pre><code>/setup-matt-pocock-skills
-# 初期不知道该用哪个技能？直接问路由器：
-/ask-matt 我要给现有订单服务加一个异步退款补偿机制，从哪一步开始？</code></pre>
+
+# 不确定当前任务应调用哪个技能时，可使用内置路由命令：
+/ask-matt 我要给现有订单服务增加异步退款补偿机制，应该从哪一步开始？</code></pre>
         </div>
 
-        <h2 id="sec-1"><span class="sec-num">01</span>场景选型决策树：避免过度工程化</h2>
-        <p>用好这套工具的第一原则是<strong>按改动规模选路径</strong>（参考 <a href="https://re-cinq.com/blog/matt-pocock-skills" target="_blank" rel="noopener">re-cinq 指南</a> 与 <a href="https://www.ai.joaoqueiros.com/blog/matt-pocock-ai-coding-skills-grill-spec-ticket-review" target="_blank" rel="noopener">Joao Queiros 评测</a>），不要每个 10 行小改动都拷问半小时。</p>
+        <h2 id="routing">任务路径选择</h2>
+        <p>为避免小改动引入不必要的流程开销，建议按改动复杂度选择对应工作流（参考 <a href="https://re-cinq.com/blog/matt-pocock-skills" target="_blank" rel="noopener">re-cinq 指南</a> 与 <a href="https://www.ai.joaoqueiros.com/blog/matt-pocock-ai-coding-skills-grill-spec-ticket-review" target="_blank" rel="noopener">Joao Queiros 实践评测</a>）：</p>
 
         <div class="diagram-box">
           <svg viewBox="0 0 860 220" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family: -apple-system, PingFang SC, sans-serif;">
-            <rect x="330" y="10" width="200" height="40" rx="10" fill="#1e293b"/>
-            <text x="430" y="35" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">收到新任务 / 问题</text>
-            <path d="M430 50 L430 75 M90 75 L770 75 M90 75 L90 95 M260 75 L260 95 M430 75 L430 95 M600 75 L600 95 M770 75 L770 95" stroke="#94a3b8" stroke-width="1.8" fill="none"/>
+            <rect x="330" y="10" width="200" height="40" rx="4" fill="var(--text)"/>
+            <text x="430" y="35" text-anchor="middle" fill="var(--bg)" font-size="14" font-weight="700">收到新任务 / 问题</text>
+            <path d="M430 50 L430 75 M90 75 L770 75 M90 75 L90 95 M260 75 L260 95 M430 75 L430 95 M600 75 L600 95 M770 75 L770 95" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
             <g transform="translate(10,95)">
-              <rect width="156" height="110" rx="10" fill="#ecfdf5" stroke="#10b981"/>
-              <text x="78" y="26" text-anchor="middle" fill="#065f46" font-size="13" font-weight="700">极小改动 / 清晰Bug</text>
-              <text x="78" y="56" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="600">One-shot + tdd</text>
-              <text x="78" y="76" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="600">+ /code-review</text>
-              <text x="78" y="98" text-anchor="middle" fill="#64748b" font-size="11">无需拷问，速战速决</text>
+              <rect width="156" height="110" rx="4" fill="var(--bg)" stroke="var(--teal)"/>
+              <text x="78" y="26" text-anchor="middle" fill="var(--teal)" font-size="13" font-weight="700">极小改动 / 清晰Bug</text>
+              <text x="78" y="56" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600">One-shot + tdd</text>
+              <text x="78" y="76" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="600">+ /code-review</text>
+              <text x="78" y="98" text-anchor="middle" fill="var(--text-muted)" font-size="11">直接实现与验证</text>
             </g>
             <g transform="translate(181,95)">
-              <rect width="156" height="110" rx="10" fill="#eef2ff" stroke="#4f46e5"/>
-              <text x="78" y="26" text-anchor="middle" fill="#3730a3" font-size="13" font-weight="700">中大型功能 (主力)</text>
-              <text x="78" y="54" text-anchor="middle" fill="#0f172a" font-size="11.5" font-weight="600">/grill-with-docs</text>
-              <text x="78" y="73" text-anchor="middle" fill="#0f172a" font-size="11.5" font-weight="600">→ /to-spec → /implement</text>
-              <text x="78" y="98" text-anchor="middle" fill="#64748b" font-size="11">先对齐模型，再交付</text>
+              <rect width="156" height="110" rx="4" fill="var(--bg)" stroke="var(--accent)"/>
+              <text x="78" y="26" text-anchor="middle" fill="var(--accent)" font-size="13" font-weight="700">中大型功能（主力）</text>
+              <text x="78" y="54" text-anchor="middle" fill="var(--text)" font-size="11.5" font-weight="600">/grill-with-docs</text>
+              <text x="78" y="73" text-anchor="middle" fill="var(--text)" font-size="11.5" font-weight="600">→ /to-spec → /implement</text>
+              <text x="78" y="98" text-anchor="middle" fill="var(--text-muted)" font-size="11">先对齐模型，再交付</text>
             </g>
             <g transform="translate(352,95)">
-              <rect width="156" height="110" rx="10" fill="#f5f3ff" stroke="#7c3aed"/>
-              <text x="78" y="26" text-anchor="middle" fill="#5b21b6" font-size="13" font-weight="700">超大跨会话项目</text>
-              <text x="78" y="60" text-anchor="middle" fill="#0f172a" font-size="12.5" font-weight="700">/wayfinder</text>
-              <text x="78" y="98" text-anchor="middle" fill="#64748b" font-size="11">先画决策地图，逐块消雾</text>
+              <rect width="156" height="110" rx="4" fill="var(--bg)" stroke="var(--border-strong)"/>
+              <text x="78" y="26" text-anchor="middle" fill="var(--text)" font-size="13" font-weight="700">超大跨会话项目</text>
+              <text x="78" y="60" text-anchor="middle" fill="var(--text)" font-size="12.5" font-weight="700">/wayfinder</text>
+              <text x="78" y="98" text-anchor="middle" fill="var(--text-muted)" font-size="11">建立决策地图，分阶段推进</text>
             </g>
             <g transform="translate(523,95)">
-              <rect width="156" height="110" rx="10" fill="#fffbeb" stroke="#d97706"/>
-              <text x="78" y="26" text-anchor="middle" fill="#92400e" font-size="13" font-weight="700">老代码重构</text>
-              <text x="78" y="56" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="600">/improve-codebase-</text>
-              <text x="78" y="73" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="600">architecture</text>
-              <text x="78" y="98" text-anchor="middle" fill="#64748b" font-size="11">扫描深模块，输出报告</text>
+              <rect width="156" height="110" rx="4" fill="var(--bg)" stroke="var(--amber)"/>
+              <text x="78" y="26" text-anchor="middle" fill="var(--amber)" font-size="13" font-weight="700">存量代码重构</text>
+              <text x="78" y="56" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="600">/improve-codebase-</text>
+              <text x="78" y="73" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="600">architecture</text>
+              <text x="78" y="98" text-anchor="middle" fill="var(--text-muted)" font-size="11">扫描模块边界，输出方案</text>
             </g>
             <g transform="translate(694,95)">
-              <rect width="156" height="110" rx="10" fill="#fef2f2" stroke="#ef4444"/>
-              <text x="78" y="26" text-anchor="middle" fill="#991b1b" font-size="13" font-weight="700">棘手疑难 Bug</text>
-              <text x="78" y="60" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">diagnosing-bugs</text>
-              <text x="78" y="98" text-anchor="middle" fill="#64748b" font-size="11">红灯复现→最小化→回归</text>
+              <rect width="156" height="110" rx="4" fill="var(--bg)" stroke="var(--accent)"/>
+              <text x="78" y="26" text-anchor="middle" fill="var(--accent)" font-size="13" font-weight="700">复杂疑难 Bug</text>
+              <text x="78" y="60" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="700">diagnosing-bugs</text>
+              <text x="78" y="98" text-anchor="middle" fill="var(--text-muted)" font-size="11">失败复现→最小化→回归</text>
             </g>
           </svg>
-          <div class="diagram-caption">接到需求时的 5 条技能选型路径</div>
+          <div class="diagram-caption">按改动规模划分的 5 条标准执行路径</div>
         </div>
 
-        <h2 id="sec-2"><span class="sec-num">02</span>核心主流程：单需求 6 步实操</h2>
-        <div class="steps-grid">
-          <div class="step-card">
-            <div class="step-head"><span class="step-badge">STEP 01</span><span class="step-cmd">/grill-with-docs</span></div>
-            <p><strong>只讲 Why 不讲 What。</strong>通过多轮追问沉淀 <code>GLOSSARY.md</code>（统一术语）与 <code>ADR</code>（记录权衡）。遇到核心分歧时要求「一次只问一个问题」；连续回复「同意」即对齐完成。</p>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-badge">STEP 02</span><span class="step-cmd">prototype / /to-questionnaire</span></div>
-            <p>交互拿不准，派子 Agent 一次做 2–3 版<strong>一次性原型</strong>（切忌照搬进生产）；碰到产品经理没定的规则盲区，用 <code>/to-questionnaire</code> 一键生成异步问卷发给业务方。</p>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-badge">STEP 03</span><span class="step-cmd">/to-spec</span></div>
-            <p>将共识合成为施工蓝图（用户故事、实现决策、明确的 Out of Scope）。<strong>人工必审 5 项</strong>：范围边界、核心行为、排除项、数据迁移、验收标准。</p>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-badge">STEP 04</span><span class="step-cmd">/to-tickets</span></div>
-            <p>仅当任务超单次上下文或可并行时拆分。每张 Ticket 声明依赖关系（Blocked by），优先切出前置重构与端到端垂直切片（Tracer Bullet）。</p>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-badge">STEP 05</span><span class="step-cmd">/compact + /implement-spec</span></div>
-            <p>决策落盘后<strong>立即压缩上下文</strong>，避开 150k+ Token 愚蠢区。小功能用 <code>/implement</code>（含 TDD），多工单大需求用 <code>/implement-spec</code> 离席并行交付。</p>
-          </div>
-          <div class="step-card">
-            <div class="step-head"><span class="step-badge">STEP 06</span><span class="step-cmd">/code-review + /pr + /retro</span></div>
-            <p>双独立子 Agent 分别审查「规范」与「Spec 还原度」；<code>/pr</code> 标注双向门/单向门风险；合并后跑 <code>/retro</code> 把 Review 痛点沉淀为<strong>只减不增的 Lint 棘轮</strong>。</p>
-          </div>
-        </div>
+        <h2 id="workflow">标准 6 步开发工作流</h2>
+        <p>面向中大型功能需求的推荐闭环如下：</p>
 
-        <h2 id="sec-3"><span class="sec-num">03</span>高频辅助技能速查</h2>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>技能命令</th><th>适用场景</th><th>一句话用法</th></tr></thead>
+            <thead>
+              <tr><th>阶段</th><th>命令</th><th>关键动作与产出物</th></tr>
+            </thead>
             <tbody>
-              <tr><td><code>/grill-me</code></td><td>非代码方案、架构选型</td><td>纯思维拷问，不读写代码仓文档</td></tr>
-              <tr><td><code>/wait-what</code></td><td>AI 回复太啰嗦、黑话太多</td><td>结合 <code>GLOSSARY.md</code> 用大白话重讲</td></tr>
-              <tr><td><code>/handoff</code></td><td>长会话快撑爆上下文</td><td>生成交接文档，换干净窗口无缝续跑</td></tr>
-              <tr><td><code>/triage</code></td><td>团队 Issue 池杂乱</td><td>按标签规范自动分拣清洗工单</td></tr>
-              <tr><td><code>/wizard</code></td><td>人工配置密钥、运维后台</td><td>生成交互式 Bash 向导带人一步步操作</td></tr>
-              <tr><td><code>/writing-for-agents</code></td><td>写或瘦身 <code>AGENTS.md</code></td><td>精简无效废话，提升指令遵循率</td></tr>
+              <tr>
+                <td><strong>1. 需求澄清</strong></td>
+                <td><code>/grill-with-docs</code></td>
+                <td>聚焦问题背景（Why）而非预设实现（What），通过多轮问答沉淀 <code>GLOSSARY.md</code>（领域术语）与 <code>ADR</code>（架构决策记录）。存在核心分歧时可要求逐题提问，直至共识稳定。</td>
+              </tr>
+              <tr>
+                <td><strong>2. 原型与规则确认</strong></td>
+                <td><code>prototype</code> / <code>/to-questionnaire</code></td>
+                <td>交互方案不确定时，并行生成 2–3 套一次性可交互原型验证手感（不直接合入生产代码）；业务规则存在盲区时，导出异步确认问卷发送给业务方。</td>
+              </tr>
+              <tr>
+                <td><strong>3. 规格说明书</strong></td>
+                <td><code>/to-spec</code></td>
+                <td>输出结构化 Spec（用户故事、技术方案、Out of Scope 清单）。<strong>人工必审 5 项</strong>：范围边界、核心行为、排除项、数据迁移、验收标准。</td>
+              </tr>
+              <tr>
+                <td><strong>4. 任务拆分</strong></td>
+                <td><code>/to-tickets</code></td>
+                <td>当工作量超出单次上下文窗口或具备并行条件时拆分 Ticket，显式声明 <code>Blocked by</code> 依赖关系，优先切分前置重构与端到端垂直切片（Tracer Bullet）。</td>
+              </tr>
+              <tr>
+                <td><strong>5. 压缩与实现</strong></td>
+                <td><code>/compact</code> + <code>/implement-spec</code></td>
+                <td>决策落盘后立即压缩上下文，避免超过 150k+ Token 后质量下降。单任务使用 <code>/implement</code>（内置 TDD），多工单任务使用 <code>/implement-spec</code> 并行交付。</td>
+              </tr>
+              <tr>
+                <td><strong>6. 审查与复盘</strong></td>
+                <td><code>/code-review</code> + <code>/pr</code> + <code>/retro</code></td>
+                <td>通过独立子 Agent 分别校验代码规范与 Spec 还原度；<code>/pr</code> 区分可回滚变更与不可逆变更；合并后执行 <code>/retro</code>，将高频问题固化为只减不增的 Lint 规则。</td>
+              </tr>
             </tbody>
           </table>
         </div>
 
-        <h2 id="sec-4"><span class="sec-num">04</span>企业级项目落地参考</h2>
-        <div class="callout teal">
-          <div class="callout-title">核心判断：企业团队不要照搬全套 27 个个人技能</div>
-          <p>多人并行开发时，个人向的上下文技能容易冲突。正确姿势是 <strong>Fork 私有化裁剪 + 前置业务知识库 + 生产安全门禁</strong>。</p>
+        <h2 id="commands">常用辅助命令速查</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>命令</th><th>适用场景</th><th>功能说明</th></tr></thead>
+            <tbody>
+              <tr><td><code>/grill-me</code></td><td>非代码方案讨论、技术选型</td><td>纯问题推演与边界澄清，不读写代码仓文档</td></tr>
+              <tr><td><code>/wait-what</code></td><td>输出过于冗长或术语密集</td><td>结合 <code>GLOSSARY.md</code> 以简明语言重述核心逻辑</td></tr>
+              <tr><td><code>/handoff</code></td><td>长会话临近上下文上限</td><td>生成结构化交接文档，便于在新会话中无损接续</td></tr>
+              <tr><td><code>/triage</code></td><td>团队 Issue 队列积压</td><td>按仓库标签体系自动分类与清洗工单</td></tr>
+              <tr><td><code>/wizard</code></td><td>密钥配置、运维后台手工操作</td><td>生成交互式 Bash 向导，分步引导人工完成配置</td></tr>
+              <tr><td><code>/writing-for-agents</code></td><td>编写或优化 <code>AGENTS.md</code></td><td>精简冗余规则，提高 Agent 指令遵循率</td></tr>
+            </tbody>
+          </table>
         </div>
 
-        <h3>1. 国内商业团队实战：四步流水线 + AI Coding 业务知识库</h3>
-        <p>据歪歪在 <a href="https://mp.weixin.qq.com/s/7JAC2j-ICG-ndFLKSFgm9w" target="_blank" rel="noopener">团队数月实践复盘</a> 中的经验：团队收敛为 <code>grill-with-docs → to-spec → to-tickets → implement</code> 四步，统一全员话术并落地「重设计、轻编码」。针对复杂业务下 AI 追问 79 个问题导致开发者「力竭」的痛点，团队自建 <strong>AI Coding 业务知识库</strong>（业务流程、仓库边界、代码入口、库表设计）供拷问前先查库。待攻克课题是「合并主干时自动触发知识库增量更新」，与 <code>/retro</code> 形成互补（知识库补业务背景，<code>/retro</code> 优化工程环境）。</p>
+        <h2 id="enterprise">团队落地与生产治理</h2>
+        <div class="callout teal">
+          <div class="callout-title">核心原则</div>
+          <p>团队项目不建议原样引入全部 27 个个人技能，推荐采用「Fork 私有化裁剪 + 前置业务知识库 + 生产安全门禁」模式。</p>
+        </div>
 
-        <h3>2. 海外多人团队实践：Fork 裁剪 + 注入公司技术栈纪律</h3>
-        <p>在 <a href="https://www.reddit.com/r/ClaudeCode/comments/1w89udt/matt_pocock_skills_grilling_and_wayfinder_how_is/" target="_blank" rel="noopener">Reddit 工程团队讨论</a> 中，团队选择 Fork 后仅保留主干工作流，并为公司常用技术栈（如 Java/Spring 微服务、内部 RPC/ORM 事务与日志规范）编写专属的 Model-invoked 纪律 Skill，同时通过 <code>/setup-matt-pocock-skills</code> 对接 Jira / GitLab。</p>
+        <h3>1. 流程收敛与业务知识库前置</h3>
+        <p>参考国内商业团队的长期实践（<a href="https://mp.weixin.qq.com/s/7JAC2j-ICG-ndFLKSFgm9w" target="_blank" rel="noopener">团队复盘文章</a>），多数团队将主流程收敛为 <code>grill-with-docs → to-spec → to-tickets → implement</code> 四步。针对复杂业务下需求澄清阶段追问过多的问题，建议前置维护 <strong>AI Coding 业务知识库</strong>（业务流程、仓库职责、代码入口、核心库表），供 Agent 在提问前自动检索，并与 <code>/retro</code> 形成互补（知识库沉淀业务上下文，<code>/retro</code> 改进工程环境）。</p>
 
-        <h3>3. 生产环境三大硬门禁</h3>
+        <h3>2. 私有化裁剪与技术栈规范注入</h3>
+        <p>参考海外工程团队经验（<a href="https://www.reddit.com/r/ClaudeCode/comments/1w89udt/matt_pocock_skills_grilling_and_wayfinder_how_is/" target="_blank" rel="noopener">Reddit 工程讨论</a>），团队通常通过 Fork 保留核心主干流程，补充适配内部技术栈（如 Java/Spring 微服务、内部 RPC/ORM 事务及日志规范）的 Model-invoked 纪律技能，并通过 <code>/setup-matt-pocock-skills</code> 接入内部 Jira 与 GitLab。</p>
+
+        <h3>3. 生产环境三项门禁</h3>
         <ul>
-          <li><strong>Stacked PRs 分级审查</strong>：绝不一次性合入数千行巨型 PR。拆成可随时回滚的<strong>双向门</strong>小 PR，对数据库迁移、权限与核心开关等<strong>单向门</strong>强制人工严审 + Feature Flag 灰度（参见 <a href="https://www.youtube.com/watch?v=jVBlkOF8sHk" target="_blank" rel="noopener">Matt 实战视频</a>）。</li>
-          <li><strong>Lint 棘轮（Shrink-only Ratchet）</strong>：老项目历史债务多，不搞停工大重构，直接上线自定义静态规则锁死存量上限——<strong>新代码零容忍，旧存量只减不增</strong>。</li>
-          <li><strong>内部版本锁定</strong>：Skill 为纯文本 Markdown 与脚本，企业应先做安全审计并通过内部仓库分发锁定版本，不直接拉取未审外部更新。</li>
+          <li><strong>Stacked PRs 分级审查</strong>：禁止一次性合入数千行巨型 PR。拆分为可随时回滚的常规 PR 与涉及数据库迁移、权限策略、核心开关的高风险 PR，后者强制人工评审与 Feature Flag 灰度。</li>
+          <li><strong>Lint 棘轮（Shrink-only Ratchet）</strong>：面对历史技术债，不中断业务做全面重构，而是通过自定义静态规则锁定存量上限——新增代码零容忍，既有存量只减不增。</li>
+          <li><strong>内部版本锁定</strong>：Skill 包含 Markdown 指令与辅助脚本，生产团队应先完成安全审计，通过内部仓库锁定版本分发，避免直接拉取未审计的外部自动更新。</li>
         </ul>
 
-        <h2 id="sec-5"><span class="sec-num">05</span>可直接照抄的 7 天低风险试点路线</h2>
-        <p>参考 <a href="https://www.ai.joaoqueiros.com/blog/matt-pocock-ai-coding-skills-grill-spec-ticket-review" target="_blank" rel="noopener">Joao Queiros 试点方案</a>，先选 1–2 名业务骨干 + 1 个有真实模糊度但风险可控的中等需求跑通闭环：</p>
-        <div class="timeline">
-          <div class="tl-item">
-            <div class="tl-day">DAY 01</div>
-            <div class="tl-title">建仓与选点</div>
-            <div class="tl-desc">单选方式安装，跑通 <code>/setup-matt-pocock-skills</code>，选定边界清晰的中等试点需求。</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-day">DAY 02–04</div>
-            <div class="tl-title">拷问与严审蓝图</div>
-            <div class="tl-desc">跑 <code>/grill-with-docs</code> 沉淀首批术语与 ADR；跑 <code>/to-spec</code> 由技术负责人严审范围与迁移风险。</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-day">DAY 05–06</div>
-            <div class="tl-title">切片交付测返工</div>
-            <div class="tl-desc">按需 <code>/to-tickets</code>，先交付 1 条带自动化测试的垂直切片，量化记录编码与返工耗时。</div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-day">DAY 07</div>
-            <div class="tl-title">双轴复盘与裁剪</div>
-            <div class="tl-desc">执行 <code>/code-review</code> 与 <code>/retro</code>，删掉无效指令，固化为团队 v1 规范后再推广。</div>
-          </div>
+        <h3>4. 7 天低风险试点建议</h3>
+        <p>参考 <a href="https://www.ai.joaoqueiros.com/blog/matt-pocock-ai-coding-skills-grill-spec-ticket-review" target="_blank" rel="noopener">Joao Queiros 试点方案</a>，建议由 1–2 名骨干成员选取 1 个边界清晰、风险可控的中等需求验证闭环：</p>
+        <ul>
+          <li><strong>Day 1</strong>：完成单一方式安装与 <code>/setup-matt-pocock-skills</code> 初始化，确定试点需求。</li>
+          <li><strong>Day 2–4</strong>：执行 <code>/grill-with-docs</code> 沉淀首批术语表与 ADR，生成 <code>/to-spec</code> 并由技术负责人评审范围与数据迁移方案。</li>
+          <li><strong>Day 5–6</strong>：按需拆分 <code>/to-tickets</code>，交付首条带自动化测试的端到端切片，记录编码与返工耗时。</li>
+          <li><strong>Day 7</strong>：执行 <code>/code-review</code> 与 <code>/retro</code>，裁剪冗余规则并形成团队 v1 规范。</li>
+        </ul>
+
+        <h2 id="official-readme">官方文档中文翻译（README 全文）</h2>
+        <p>以下内容译自官方仓库 <a href="https://github.com/mattpocock/skills/blob/main/README.md" target="_blank" rel="noopener">mattpocock/skills README.md</a>，保留核心原意、原著引文与全部 27 个技能的源码直达链接，便于中文读者对照学习。</p>
+
+        <h3>1. 设计哲学：Skills For Real Engineers</h3>
+        <p>这套 Agent Skills 是 Matt Pocock 每天用来做<strong>真实软件工程（而非 Vibe Coding）</strong>的工具集。</p>
+        <p>开发真正可维护的应用从来不是一件容易的事。像 GSD、BMAD、Spec-Kit 这类方案试图通过「接管整个研发流程」来提供帮助，但代价是剥夺了开发者的控制权，且一旦流程本身出 Bug 会非常难以排查。</p>
+        <p>因此，这套 Skills 的设计原则是：<strong>小巧、易于修改、可自由组合、不绑定特定大模型</strong>，沉淀自数十年的软件工程经验。你可以随意改造它，让它真正成为属于你自己的工作流。</p>
+
+        <h3>2. 为什么需要这套 Skills：解决 AI 编程四大高频痛点</h3>
+        <p>这套技能库最初是为了解决使用 Claude Code、Codex 等编程 Agent 时最常见的四类失败模式：</p>
+
+        <p><strong>痛点 #1：Agent 没按我的真实意图干活</strong></p>
+        <blockquote>
+          <p>「没有人一开始就知道自己到底想要什么。」—— David Thomas &amp; Andrew Hunt，《程序员修炼之道》（<em>The Pragmatic Programmer</em>）</p>
+        </blockquote>
+        <p><strong>问题所在</strong>：软件开发中最常见的失败源于「认知错位」。你以为对方懂了你的需求，结果看到成品才发现它完全理解偏了。AI 时代同样如此，你和 Agent 之间天然存在沟通鸿沟。</p>
+        <p><strong>解法</strong>：在动手写代码之前进行一次<strong>深度追问（Grilling Session）</strong>，让 Agent 就你要做的东西连续抛出细节问题，直到设计树上的每个分支都达成一致：</p>
+        <ul>
+          <li><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md" target="_blank" rel="noopener"><code>/grill-me</code></a>：适用于非代码类方案与设计讨论；</li>
+          <li><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md" target="_blank" rel="noopener"><code>/grill-with-docs</code></a>：在 <code>/grill-me</code> 的基础上结合项目文档，顺带打磨领域模型与 ADR。</li>
+        </ul>
+
+        <p><strong>痛点 #2：Agent 表达过于啰嗦</strong></p>
+        <blockquote>
+          <p>「有了通用语言，开发者之间的对话与代码中的表达就都源自同一个领域模型。」—— Eric Evans，《领域驱动设计》（<em>Domain-Driven Design</em>）</p>
+        </blockquote>
+        <p><strong>问题所在</strong>：Agent 被空投进一个陌生代码库时，只能边猜边理解业务黑话，于是经常用 20 个词去解释一个本可以用 1 个术语说清的概念。</p>
+        <p><strong>解法</strong>：在仓库中沉淀一份<strong>共享术语表（<code>GLOSSARY.md</code>）</strong>。以 Matt 的 <code>course-video-manager</code> 项目为例，引入术语表前后的沟通精简程度对比如下：</p>
+        <ul>
+          <li><strong>引入前</strong>：「当课程某个章节里的一节课变成『真实存在』（也就是在文件系统里分到了一个位置）时，这里会出现一个问题。」</li>
+          <li><strong>引入后</strong>：「物化级联（materialization cascade）这里出了问题。」</li>
+        </ul>
+        <div class="callout teal">
+          <div class="callout-title">共享语言（GLOSSARY.md）的三个额外收益</div>
+          <p>① <strong>变量、函数与文件命名高度一致</strong>，全部对齐同一套领域词汇；② <strong>代码库对 Agent 更易导航</strong>；③ 更精炼的词汇让 Agent 在<strong>思考阶段消耗更少的 Token</strong>。这一机制已内置在 <code>/grill-with-docs</code> 中，同时会把难以口头解释的权衡写入 ADR。</p>
+        </div>
+
+        <p><strong>痛点 #3：生成的代码跑不通</strong></p>
+        <blockquote>
+          <p>「始终走小而克制的步伐。反馈速度决定了你的研发上限，永远不要一次接过大的任务。」—— David Thomas &amp; Andrew Hunt，《程序员修炼之道》</p>
+        </blockquote>
+        <p><strong>问题所在</strong>：即便你和 Agent 已经对齐了需求，它依然可能写出跑不通的烂代码。此时必须检查你的<strong>反馈闭环</strong>——如果 Agent 看不到代码运行后的真实结果，它就是在盲飞。</p>
+        <p><strong>解法</strong>：配齐静态类型检查、浏览器访问能力与自动化测试。在自动化测试中，<strong>红 → 绿 → 重构（Red-Green-Refactor）</strong>循环尤为关键（先写一个失败测试，再实现代码让测试通过）：</p>
+        <ul>
+          <li><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md" target="_blank" rel="noopener"><code>/tdd</code></a>：可插入任意项目，引导红-绿-重构循环并明确好测试与坏测试的标准；</li>
+          <li><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md" target="_blank" rel="noopener"><code>/diagnosing-bugs</code></a>：将排障最佳实践封装成按阶段设门禁的诊断闭环。</li>
+        </ul>
+
+        <p><strong>痛点 #4：代码库迅速腐化成「大泥球（Ball of Mud）」</strong></p>
+        <blockquote>
+          <p>「每天都持续投入精力打磨系统设计。」—— Kent Beck，《解析极限编程》（<em>Extreme Programming Explained</em>）<br/>「最好的模块是深模块：通过极简的接口，向外提供丰富的能力。」—— John Ousterhout，《软件设计哲学》（<em>A Philosophy of Software Design</em>）</p>
+        </blockquote>
+        <p><strong>问题所在</strong>：Agent 极大提升了写代码的速度，也同样加速了<strong>软件熵增</strong>——代码库正以前所未有的速度变得复杂、难以修改。</p>
+        <p><strong>解法</strong>：在 AI 时代依然坚持重视代码设计。<code>/to-spec</code> 会在生成规格前先盘问涉及哪些模块；更重要的是每隔几天运行一次 <a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md" target="_blank" rel="noopener"><code>/improve-codebase-architecture</code></a>，扫描代码库中可以「做深模块」的重构候选点（注意：它是架构巡检工具，而非老烂尾项目的急救魔法）。</p>
+        <p><strong>官方小结</strong>：软件工程基本功比以往任何时候都更重要。这套 Skills 的目标，就是把这些基本功浓缩成可重复执行的工程实践。</p>
+
+        <h3>3. 官方全量 27 个技能参考手册（中英对照）</h3>
+        <p>官方按调用权限将全部技能划分为两类：<strong>User-invoked（用户触发）</strong>仅在你主动输入命令（如 <code>/grill-me</code>）时运行，负责流程编排；<strong>Model-invoked（模型触发）</strong>既可由你手动调用，也可由 Agent 在匹配场景下自动启用，负责封装可复用的工程纪律。<strong>约束规则</strong>：用户触发技能可以调用模型触发技能，但绝不会调用另一个用户触发技能。</p>
+
+        <p><strong>Engineering · 工程类技能（20 个，日常写代码高频使用）</strong></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>技能名称（直达源码）</th><th>触发方式</th><th>官方功能说明（中文译注）</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/ask-matt/SKILL.md" target="_blank" rel="noopener"><code>ask-matt</code></a></td><td>User-invoked</td><td>询问当前场景适合哪个技能或流程，作为本仓库所有用户触发技能的路由器。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md" target="_blank" rel="noopener"><code>grill-with-docs</code></a></td><td>User-invoked</td><td>在深度追问对齐需求的同时构建项目领域模型，打磨术语并直接更新 <code>GLOSSARY.md</code> 与 ADR。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/triage/SKILL.md" target="_blank" rel="noopener"><code>triage</code></a></td><td>User-invoked</td><td>按分拣角色状态机推进和流转团队的 Issue 工单。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md" target="_blank" rel="noopener"><code>improve-codebase-architecture</code></a></td><td>User-invoked</td><td>扫描代码库中适合深化模块的机会，输出可视化 HTML 报告，并对选中的重构项展开深度追问。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/SKILL.md" target="_blank" rel="noopener"><code>setup-matt-pocock-skills</code></a></td><td>User-invoked</td><td>为当前仓库初始化工程技能配置（工单系统、Triage 标签、领域文档路径）。每个仓库使用前运行一次。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md" target="_blank" rel="noopener"><code>to-spec</code></a></td><td>User-invoked</td><td>将当前对话直接汇总成规格说明书（Spec）并发布到工单系统；不再追问，仅提炼已达成共识的内容。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/to-tickets/SKILL.md" target="_blank" rel="noopener"><code>to-tickets</code></a></td><td>User-invoked</td><td>将计划、Spec 或对话拆分为一组带阻塞依赖关系的端到端切片（Tracer-bullet）工单，支持本地文本或工单系统原生依赖链接。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md" target="_blank" rel="noopener"><code>implement</code></a></td><td>User-invoked</td><td>按 Spec 或工单集合完成编码实现，在约定边界处驱动 <code>/tdd</code>，并在提交前执行 <code>/code-review</code> 收口。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/implement-spec/SKILL.md" target="_blank" rel="noopener"><code>implement-spec</code></a></td><td>User-invoked</td><td>在单条集成分支上实现整份 Spec：将工单按任务图编排，并行派生实现子 Agent 推进就绪任务，最终以 <code>/code-review</code> 收口。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md" target="_blank" rel="noopener"><code>wayfinder</code></a></td><td>User-invoked</td><td>针对超出单次会话容量的超大型项目，在工单系统上建立共享的「决策工单地图」，逐个消解不确定性直至路径清晰。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/retro/SKILL.md" target="_blank" rel="noopener"><code>retro</code></a></td><td>User-invoked</td><td>会话结束后复盘并按严重程度优先提出 Agent 工程环境改进建议（目录导航、自动检查、编码规范、引导文件与工具链）。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md" target="_blank" rel="noopener"><code>prototype</code></a></td><td>Model-invoked</td><td>快速构建一次性原型来回答设计问题：状态/逻辑验证生成单个可分享 HTML，UI 探索则在同一路由下生成多套风格迥异的可切换方案。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md" target="_blank" rel="noopener"><code>diagnosing-bugs</code></a></td><td>Model-invoked</td><td>针对疑难 Bug 与性能回退的严谨排查闭环：构建红灯复现 → 最小化 → 提出假设 → 插桩验证 → 修复 → 回归测试。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/research/SKILL.md" target="_blank" rel="noopener"><code>research</code></a></td><td>Model-invoked</td><td>以后台子 Agent 方式基于高可信一手资料调研技术问题，并在仓库内沉淀带引用的 Markdown 研究文档。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md" target="_blank" rel="noopener"><code>tdd</code></a></td><td>Model-invoked</td><td>遵循红-绿-重构循环的测试驱动开发，每次聚焦一个垂直切片完成功能或修复缺陷。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md" target="_blank" rel="noopener"><code>domain-modeling</code></a></td><td>Model-invoked</td><td>主动构建并打磨项目领域模型：对照术语表质疑不准确命名、用边界场景压力测试，并即时更新 <code>GLOSSARY.md</code> 与 ADR。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/SKILL.md" target="_blank" rel="noopener"><code>codebase-design</code></a></td><td>Model-invoked</td><td>设计「深模块」的共享工程纪律与词汇：将复杂行为收敛在极简接口之后，切分清晰接缝，并确保可通过接口直接测试。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md" target="_blank" rel="noopener"><code>code-review</code></a></td><td>Model-invoked</td><td>对固定基线以来的代码变更做双轴并行审查：<strong>Standards</strong>（是否符合仓库规范及 Fowler 代码坏味道基线）与 <strong>Spec</strong>（是否忠实实现原需求），由两个独立子 Agent 执行避免互相干扰。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/pr/SKILL.md" target="_blank" rel="noopener"><code>pr</code></a></td><td>Model-invoked</td><td>规范 Pull Request 描述结构：用最精简的可视化方式说明改动、提供改前/改后有效证据，并明确标注合并风险（单向门/双向门及影响半径）。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/engineering/wizard/SKILL.md" target="_blank" rel="noopener"><code>wizard</code></a></td><td>Model-invoked</td><td>生成交互式 Bash 向导脚本，分步引导人类完成只有人工能做的操作（开通云资源、配置凭据或 CI 密钥、操作陌生第三方后台、一次性数据迁移或切流）。</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p><strong>Productivity · 通用效率类技能（7 个，不限代码场景）</strong></p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>技能名称（直达源码）</th><th>触发方式</th><th>官方功能说明（中文译注）</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md" target="_blank" rel="noopener"><code>grill-me</code></a></td><td>User-invoked</td><td>就某项计划或设计对你进行毫不留情的连续追问，直到设计树的每一个分支都得到明确解答。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md" target="_blank" rel="noopener"><code>handoff</code></a></td><td>User-invoked</td><td>将当前冗长对话压缩成一份结构化交接文档，让另一个干净上下文的 Agent 无缝继续工作。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/teach/SKILL.md" target="_blank" rel="noopener"><code>teach</code></a></td><td>User-invoked</td><td>以当前目录作为有状态的教学工作区，跨多个会话循序渐进地教你掌握一项新技能或新概念。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/to-questionnaire/SKILL.md" target="_blank" rel="noopener"><code>to-questionnaire</code></a></td><td>User-invoked</td><td>将你无法独自拍板的决策整理成 Markdown 问卷发给能做决定的人（支持异步填写或会议过审）；它会先追问你发送对象与期望回收的信息，而不是考你业务本身。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/wait-what/SKILL.md" target="_blank" rel="noopener"><code>wait-what</code></a></td><td>User-invoked</td><td>只要 AI 有一条回复让你没听懂，立刻触发此命令：Agent 会补齐你缺失的背景上下文，用大白话和你的 <code>GLOSSARY.md</code> 词汇重新讲一遍。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md" target="_blank" rel="noopener"><code>grilling</code></a></td><td>Model-invoked</td><td>可复用的底层追问原语，驱动 <code>grill-me</code>、<code>grill-with-docs</code>、<code>triage</code>、<code>wayfinder</code> 与 <code>improve-codebase-architecture</code> 等所有追问类技能。</td></tr>
+              <tr><td><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md" target="_blank" rel="noopener"><code>writing-for-agents</code></a></td><td>Model-invoked</td><td>专门用于编写面向 Agent 阅读的文档，包括 Skill 文件、<code>AGENTS.md</code> / <code>CLAUDE.md</code> 及所有供 Agent 索引的规范文档。</td></tr>
+            </tbody>
+          </table>
         </div>
 
         <section class="refs" id="refs">
-          <h3>参考来源</h3>
+          <h3>参考资料</h3>
           <ul>
             <li>官方仓库：<a href="https://github.com/mattpocock/skills" target="_blank" rel="noopener">mattpocock/skills — Skills for Real Engineers</a>（GitHub）</li>
-            <li>官方索引：<a href="https://www.aihero.dev/skills" target="_blank" rel="noopener">AI Skills for Real Engineers</a> 及 <a href="https://www.aihero.dev/skills-setup-matt-pocock-skills" target="_blank" rel="noopener">/setup-matt-pocock-skills 说明</a></li>
-            <li>实战视频：Matt Pocock，<a href="https://www.youtube.com/watch?v=jVBlkOF8sHk" target="_blank" rel="noopener">Watch me ship a 21,000-line feature with mattpocock/skills</a>（YouTube）</li>
-            <li>国内团队实践：歪歪，<a href="https://mp.weixin.qq.com/s/7JAC2j-ICG-ndFLKSFgm9w" target="_blank" rel="noopener">《我把这套 skills 引入团队，跑了好几个月后，说点真实体感。》</a></li>
-            <li>社区实践参考：<a href="https://re-cinq.com/blog/matt-pocock-skills" target="_blank" rel="noopener">re-cinq 选型指南</a> · <a href="https://www.ai.joaoqueiros.com/blog/matt-pocock-ai-coding-skills-grill-spec-ticket-review" target="_blank" rel="noopener">Joao Queiros 7天试点</a> · <a href="https://www.reddit.com/r/ClaudeCode/comments/1w89udt/matt_pocock_skills_grilling_and_wayfinder_how_is/" target="_blank" rel="noopener">Reddit 团队实践</a> · <a href="https://github.com/vinvcn/mattpocock-skills-zh-CN" target="_blank" rel="noopener">简体中文本地化版</a></li>
+            <li>官方索引：<a href="https://www.aihero.dev/skills" target="_blank" rel="noopener">AI Skills for Real Engineers</a> 与 <a href="https://www.aihero.dev/skills-setup-matt-pocock-skills" target="_blank" rel="noopener">/setup-matt-pocock-skills 文档</a></li>
+            <li>官方演示视频：Matt Pocock，<a href="https://www.youtube.com/watch?v=jVBlkOF8sHk" target="_blank" rel="noopener">Watch me ship a 21,000-line feature with mattpocock/skills</a>（YouTube）</li>
+            <li>中文团队实践：歪歪，<a href="https://mp.weixin.qq.com/s/7JAC2j-ICG-ndFLKSFgm9w" target="_blank" rel="noopener">《我把这套 skills 引入团队，跑了好几个月后，说点真实体感。》</a></li>
+            <li>延伸阅读：<a href="https://re-cinq.com/blog/matt-pocock-skills" target="_blank" rel="noopener">re-cinq 选型指南</a> · <a href="https://www.ai.joaoqueiros.com/blog/matt-pocock-ai-coding-skills-grill-spec-ticket-review" target="_blank" rel="noopener">Joao Queiros 7天试点</a> · <a href="https://www.reddit.com/r/ClaudeCode/comments/1w89udt/matt_pocock_skills_grilling_and_wayfinder_how_is/" target="_blank" rel="noopener">Reddit 团队实践</a> · <a href="https://github.com/vinvcn/mattpocock-skills-zh-CN" target="_blank" rel="noopener">简体中文本地化版</a></li>
           </ul>
         </section>
 
         <nav class="post-nav">
           <a href="/">← 返回首页</a>
-          <a href="/notes/mattpocock-21k-lines-ai-collaboration.html">下一篇：2.1 万行代码背后的 AI 协作与程序员未来 →</a>
+          <a href="/2020/01/16/aqs1/">下一篇：AQS系列之起始篇-volatile和unsafe理解和使用 →</a>
         </nav>
       </article>
     </main>
